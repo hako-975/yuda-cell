@@ -6,30 +6,18 @@ if (!isset($_SESSION['id_user'])) {
 	exit;
 }
 
-if ($_SESSION['hak_akses'] != 'administrator') {
-	setAlert("Perhatian!", "Tidak dapat melakukan perubahan selain Administrator!", "error");
-	echo "
-		<script>
-			window.history.back();
-		</script>
-	";
-	exit;
-}
-
 $id_user = htmlspecialchars($_SESSION['id_user']);
+
 $data_profile = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM user WHERE id_user = '$id_user'"));
 
-$id_user_get = htmlspecialchars($_GET['id_user']);
 
-$data_user = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM user WHERE id_user = '$id_user_get'"));
-
-if (isset($_POST['btnUbahUser'])) {
+if (isset($_POST['btnUbahProfile'])) {
 	$username = htmlspecialchars($_POST['username']);
 	$nama_lengkap = htmlspecialchars($_POST['nama_lengkap']);
 	$no_telp_user = htmlspecialchars($_POST['no_telp_user']);
 
 	// check username 
-	$old_username = $data_user['username'];
+	$old_username = $data_profile['username'];
 	if ($username != $old_username) {
 		$check_username = mysqli_query($koneksi, "SELECT * FROM user WHERE username = '$username'");
 		if (mysqli_num_rows($check_username)) {
@@ -42,16 +30,15 @@ if (isset($_POST['btnUbahUser'])) {
 			exit;
 		}
 	}
-	
 
-	$ubah_user = mysqli_query($koneksi, "UPDATE user SET username = '$username', nama_lengkap = '$nama_lengkap', no_telp_user = '$no_telp_user' WHERE id_user = '$id_user_get'");
+	$ubah_profile = mysqli_query($koneksi, "UPDATE user SET username = '$username', nama_lengkap = '$nama_lengkap', no_telp_user = '$no_telp_user' WHERE id_user = '$id_user'");
 
-	if ($ubah_user) {
-		setAlert("Berhasil!", "User ".$username." berhasil diubah!", "success");
-		header("Location:" . BASE_URL . "user/index.php");
+	if ($ubah_profile) {
+		setAlert("Berhasil!", "Profile berhasil diubah!", "success");
+		header("Location:" . BASE_URL . "profile/index.php");
 		exit;
 	} else {
-		setAlert("Gagal!", "User gagal diubah!", "error");
+		setAlert("Gagal!", "Profile gagal diubah!", "error");
 		echo "
 			<script>
 				window.history.back();
@@ -60,13 +47,14 @@ if (isset($_POST['btnUbahUser'])) {
 		exit;
 	}
 }
+
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-	<title>Ubah User - <?= $data_user['username']; ?></title>
+	<title>Ubah Profile - <?= $data_profile['username']; ?></title>
     <?php include_once '../include/head.php'; ?>
 
 </head>
@@ -93,36 +81,36 @@ if (isset($_POST['btnUbahUser'])) {
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
                 	<div class="card shadow mb-4">
-                		<div class="card-header py-3">
-                            <div class="row">
-                                <div class="col head-left">
-                                    <h5 class="my-auto font-weight-bold text-primary">Ubah User</h5>
-                                </div>
-                                <div class="col head-right">
-                                    <a href="<?= BASE_URL; ?>user/index.php" class="btn btn-sm btn-primary"><i class="fas fa-fw fa-arrow-left"></i> Kembali</a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                        	<form method="post">
+	                	<div class="card-header py-3">
+	                        <div class="row">
+	                            <div class="col head-left">
+	                                <h5 class="my-auto font-weight-bold text-primary">Ubah Profile - <?= $data_profile['username']; ?></h5>
+	                            </div>
+	                            <div class="col head-right">
+	                                <a href="<?= BASE_URL; ?>profile/index.php" class="btn btn-sm btn-primary"><i class="fas fa-fw fa-arrow-left"></i> Kembali</a>
+	                            </div>
+	                        </div>
+	                    </div>
+		                <div class="card-body">
+		                	<form method="post">
 								<div class="form-group">
 									<label for="username">Username</label>
-									<input type="text" class="form-control" name="username" id="username" value="<?= $data_user['username']; ?>" required>
+									<input class="form-control" type="text" name="username" id="username" value="<?= $data_profile['username']; ?>" required>
 								</div>
 								<div class="form-group">
 									<label for="nama_lengkap">Nama Lengkap</label>
-									<input type="text" class="form-control" name="nama_lengkap" id="nama_lengkap" value="<?= $data_user['nama_lengkap']; ?>" required>
+									<input class="form-control" type="text" name="nama_lengkap" id="nama_lengkap" value="<?= $data_profile['nama_lengkap']; ?>" required>
 								</div>
 								<div class="form-group">
 									<label for="no_telp_user">No. Telp User</label>
-									<input type="number" class="form-control" name="no_telp_user" id="no_telp_user" value="<?= $data_user['no_telp_user']; ?>" required>
+									<input class="form-control" type="number" name="no_telp_user" id="no_telp_user" value="<?= $data_profile['no_telp_user']; ?>" required>
 								</div>
 								<div class="form-group text-right">
-									<button type="submit" name="btnUbahUser" class="btn btn-primary"><i class="fas fa-fw fa-paper-plane"></i> Kirim</button>
+									<button type="submit" name="btnUbahProfile" class="btn btn-primary"><i class="fas fa-fw fa-paper-plane"></i> Kirim</button>
 								</div>
 							</form>
-						</div>
-                    </div>
+		                </div>
+		            </div>
             	</div>
                 <!-- /.container-fluid -->
 
