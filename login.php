@@ -4,7 +4,7 @@ require_once 'koneksi.php';
 // check login
 if (isset($_SESSION['id_user'])) {
     setAlert("Anda telah Login!", "Selamat Datang!", "success");
-    header('Location: index.php');
+	header("Location: ".BASE_URL."index.php");
     exit;
 }
 
@@ -38,14 +38,14 @@ if (isset($_POST['btnLogin'])) {
         else
         {
             setAlert("Gagal Login!", "Username atau password yang Anda masukkan salah!", "error");
-            header("Location: login.php");
+            header("Location: ".BASE_URL."login.php");
             exit;
         }
     }
     else
     {
         setAlert("Gagal Login!", "Username atau password yang Anda masukkan salah!", "error");
-        header("Location: login.php");
+        header("Location: ".BASE_URL."login.php");
         exit;
     }
 }

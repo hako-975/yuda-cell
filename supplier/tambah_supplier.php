@@ -16,42 +16,19 @@ if ($_SESSION['hak_akses'] != 'administrator') {
 	exit;
 }
 
-$id_user = htmlspecialchars($_SESSION['id_user']);
-$data_profile = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM user WHERE id_user = '$id_user'"));
+if (isset($_POST['btnTambahSupplier'])) {
+	$nama_supplier = htmlspecialchars(ucwords($_POST['nama_supplier']));
+	$alamat_supplier = htmlspecialchars($_POST['alamat_supplier']);
+	$no_telp_supplier = htmlspecialchars($_POST['no_telp_supplier']);
 
-$id_user_get = htmlspecialchars($_GET['id_user']);
+	$tambah_supplier = mysqli_query($koneksi, "INSERT INTO supplier VALUES('', '$nama_supplier', '$alamat_supplier', '$no_telp_supplier')");
 
-$data_user = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM user WHERE id_user = '$id_user_get'"));
-
-if (isset($_POST['btnUbahUser'])) {
-	$username = htmlspecialchars($_POST['username']);
-	$nama_lengkap = htmlspecialchars($_POST['nama_lengkap']);
-	$no_telp_user = htmlspecialchars($_POST['no_telp_user']);
-
-	// check username 
-	$old_username = $data_user['username'];
-	if ($username != $old_username) {
-		$check_username = mysqli_query($koneksi, "SELECT * FROM user WHERE username = '$username'");
-		if (mysqli_num_rows($check_username)) {
-			setAlert("Gagal!", "Username telah digunakan!", "error");
-			echo "
-				<script>
-					window.history.back();
-				</script>
-			";
-			exit;
-		}
-	}
-	
-
-	$ubah_user = mysqli_query($koneksi, "UPDATE user SET username = '$username', nama_lengkap = '$nama_lengkap', no_telp_user = '$no_telp_user' WHERE id_user = '$id_user_get'");
-
-	if ($ubah_user) {
-		setAlert("Berhasil!", "User ".$username." berhasil diubah!", "success");
-		header("Location:" . BASE_URL . "user/index.php");
+	if ($tambah_supplier) {
+		setAlert("Berhasil!", "Supplier ".$nama_supplier." berhasil ditambahkan!", "success");
+		header("Location:" . BASE_URL . "supplier/index.php");
 		exit;
 	} else {
-		setAlert("Gagal!", "User gagal diubah!", "error");
+		setAlert("Gagal!", "Supplier gagal ditambahkan!", "error");
 		echo "
 			<script>
 				window.history.back();
@@ -60,13 +37,19 @@ if (isset($_POST['btnUbahUser'])) {
 		exit;
 	}
 }
+
+$id_user = htmlspecialchars($_SESSION['id_user']);
+
+$data_profile = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM user WHERE id_user = '$id_user'"));
+
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-	<title>Ubah User - <?= $data_user['username']; ?></title>
+    <title>Tambah Supplier - Yuda Cell</title>
     <?php include_once '../include/head.php'; ?>
 
 </head>
@@ -96,29 +79,29 @@ if (isset($_POST['btnUbahUser'])) {
                 		<div class="card-header py-3">
                             <div class="row">
                                 <div class="col head-left">
-                                    <h5 class="my-auto font-weight-bold text-primary">Ubah User</h5>
+                                    <h5 class="my-auto font-weight-bold text-primary">Tambah Supplier</h5>
                                 </div>
                                 <div class="col head-right">
-                                    <a href="<?= BASE_URL; ?>user/index.php" class="btn btn-sm btn-primary"><i class="fas fa-fw fa-arrow-left"></i> Kembali</a>
+                                    <a href="<?= BASE_URL; ?>supplier/index.php" class="btn btn-sm btn-primary"><i class="fas fa-fw fa-arrow-left"></i> Kembali</a>
                                 </div>
                             </div>
                         </div>
                         <div class="card-body">
                         	<form method="post">
 								<div class="form-group">
-									<label for="username">Username</label>
-									<input type="text" class="form-control" name="username" id="username" value="<?= $data_user['username']; ?>" required>
+									<label for="nama_supplier">Nama Supplier</label>
+									<input class="form-control" type="text" name="nama_supplier" id="nama_supplier" required>
 								</div>
 								<div class="form-group">
-									<label for="nama_lengkap">Nama Lengkap</label>
-									<input type="text" class="form-control" name="nama_lengkap" id="nama_lengkap" value="<?= $data_user['nama_lengkap']; ?>" required>
+									<label for="alamat_supplier">Alamat Supplier</label>
+									<textarea class="form-control" name="alamat_supplier" id="alamat_supplier" required></textarea>
 								</div>
 								<div class="form-group">
-									<label for="no_telp_user">No. Telp User</label>
-									<input type="number" class="form-control" name="no_telp_user" id="no_telp_user" value="<?= $data_user['no_telp_user']; ?>" required>
+									<label for="no_telp_supplier">No. Telp Supplier</label>
+									<input class="form-control" type="number" name="no_telp_supplier" id="no_telp_supplier" required>
 								</div>
 								<div class="form-group text-right">
-									<button type="submit" name="btnUbahUser" class="btn btn-primary"><i class="fas fa-fw fa-paper-plane"></i> Kirim</button>
+									<button type="submit" name="btnTambahSupplier" class="btn btn-primary"><i class="fas fa-fw fa-paper-plane"></i> Kirim</button>
 								</div>
 							</form>
 						</div>

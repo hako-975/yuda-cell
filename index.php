@@ -4,7 +4,7 @@ require_once 'koneksi.php';
 if (!isset($_SESSION['id_user'])) 
 {
     setAlert("Akses ditolak!", "Login terlebih dahulu!", "error");
-    header('Location: login.php');
+    header("Location: ".BASE_URL."login.php");
     exit;
 } 
 
