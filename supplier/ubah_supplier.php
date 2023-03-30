@@ -32,7 +32,7 @@ if (isset($_POST['btnUbahSupplier'])) {
 		header("Location:" . BASE_URL . "supplier/index.php");
 		exit;
 	} else {
-		setAlert("Gagal!", "Jenis Barang gagal diubah!", "error");
+		setAlert("Gagal!", "Supplier gagal diubah!", "error");
 		echo "
 			<script>
 				window.history.back();
@@ -52,7 +52,7 @@ $data_profile = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM user WH
 <html lang="en">
 
 <head>
-	<title>Ubah Jenis Barang - <?= $data_jenis_barang['jenis_barang']; ?></title>
+	<title>Ubah Supplier - <?= $data_supplier['nama_supplier']; ?></title>
     <?php include_once '../include/head.php'; ?>
 
 </head>
@@ -82,10 +82,10 @@ $data_profile = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM user WH
                 		<div class="card-header py-3">
                             <div class="row">
                                 <div class="col head-left">
-                                    <h5 class="my-auto font-weight-bold text-primary">Ubah Jenis Barang</h5>
+                                    <h5 class="my-auto font-weight-bold text-primary">Ubah Supplier</h5>
                                 </div>
                                 <div class="col head-right">
-                                    <a href="<?= BASE_URL; ?>jenis_barang/index.php" class="btn btn-sm btn-primary"><i class="fas fa-fw fa-arrow-left"></i> Kembali</a>
+                                    <a href="<?= BASE_URL; ?>supplier/index.php" class="btn btn-sm btn-primary"><i class="fas fa-fw fa-arrow-left"></i> Kembali</a>
                                 </div>
                             </div>
                         </div>
