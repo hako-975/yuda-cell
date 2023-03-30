@@ -2,35 +2,21 @@
 require_once '../koneksi.php';
 
 if (!isset($_SESSION['id_user'])) {
-<<<<<<< HEAD
-	header("Location: login.php");
-	exit;
-}
-
-
-=======
 	header("Location: ".BASE_URL."login.php");
 	exit;
 }
 
->>>>>>> 7282410724e69b75a027036b2b0f3a084e11b25a
 $id_transaksi = htmlspecialchars($_GET['id_transaksi']);
 
 
 $data_transaksi = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM transaksi INNER JOIN user ON transaksi.id_user = user.id_user WHERE transaksi.id_transaksi = '$id_transaksi'"));
 
 if ($data_transaksi == null) {
-<<<<<<< HEAD
-	echo "
-		<script>
-			window.location.href='transaksi.php';
-=======
 	setAlert("Perhatian!", "Data Transaksi tidak ditemukan!", "error");
 	header("Location:" . BASE_URL . "transaksi/index.php");
 	echo "
 		<script>
 			window.history.back();
->>>>>>> 7282410724e69b75a027036b2b0f3a084e11b25a
 		</script>
 	";
 	exit;
@@ -42,49 +28,6 @@ $id_user = htmlspecialchars($_SESSION['id_user']);
 $data_profile = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM user WHERE id_user = '$id_user'"));
 ?>
 
-<<<<<<< HEAD
-<html>
-<head>
-	<title>Transaksi</title>
-</head>
-<body>
-	<a href="transaksi.php">Kembali</a>
-	<h4>Id Transaksi: <?= $data_transaksi['id_transaksi']; ?></h4>
-	<h4>Total Harga: Rp. <?= str_replace(",", ".", number_format($data_transaksi['total_harga'])); ?></h4>
-	<h4>Bayar: Rp. <?= str_replace(",", ".", number_format($data_transaksi['bayar'])); ?></h4>
-	<h4>Kembalian: Rp. <?= str_replace(",", ".", number_format($data_transaksi['kembalian'])); ?></h4>
-	<?php if ($data_transaksi['bayar'] == '0'): ?>
-		<a href="bayar.php?id_transaksi=<?= $data_transaksi['id_transaksi']; ?>">Bayar</a><br><br>
-	<?php endif ?>
-	<a href="tambah_detail_transaksi.php?id_transaksi=<?= $data_transaksi['id_transaksi']; ?>">Tambah Transaksi Barang</a>
-	<table border="1" cellpadding="10" cellspacing="0">
-		<thead>
-			<tr>
-				<th>No.</th>
-				<th>Nama Barang</th>
-				<th>Kuantitas</th>
-				<th>Subtotal</th>
-				<th>Aksi</th>
-			</tr>
-		</thead>
-		<tbody>
-			<?php $i = 1; ?>
-			<?php foreach ($detail_transaksi as $ddt): ?>
-				<tr>
-					<td><?= $i++; ?></td>
-					<td><?= $ddt['nama_barang']; ?></td>
-					<td><?= $ddt['kuantitas']; ?></td>
-					<td>Rp. <?= str_replace(",", ".", number_format($ddt['subtotal'])); ?></td>
-					<td>
-						<a href="ubah_detail_transaksi.php?id_detail_transaksi=<?= $ddt['id_detail_transaksi']; ?>&id_transaksi=<?= $id_transaksi; ?>">Ubah</a>
-						<a onclick="return confirm('Apakah Anda yakin ingin menghapus transaksi <?= $ddt['nama_barang']; ?>?')" href="hapus_detail_transaksi.php?id_detail_transaksi=<?= $ddt['id_detail_transaksi']; ?>&id_transaksi=<?= $id_transaksi; ?>">Hapus</a>
-					</td>
-				</tr>
-			<?php endforeach ?>
-		</tbody>
-	</table>
-</body>
-=======
 
 <!DOCTYPE html>
 <html lang="en">
@@ -196,5 +139,4 @@ $data_profile = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM user WH
 
 </body>
 
->>>>>>> 7282410724e69b75a027036b2b0f3a084e11b25a
 </html>
