@@ -2,7 +2,7 @@
 require_once '../koneksi.php';
 
 if (!isset($_SESSION['id_user'])) {
-	header("Location: login.php");
+	header("Location: ".BASE_URL."login.php");
 	exit;
 }
 
@@ -38,9 +38,9 @@ if (isset($_POST['btnUbahDetailTransaksi'])) {
 	$subtotal = htmlspecialchars($_POST['subtotal']);
 
 	if ($id_barang == 0) {
+		setAlert("Gagal!", "Pilih Barang terlebih dahulu!", "error");
 		echo "
 			<script>
-				alert('Pilih Barang terlebih dahulu!');
 				window.history.back();
 			</script>
 		";
@@ -67,76 +67,136 @@ if (isset($_POST['btnUbahDetailTransaksi'])) {
 
 
 	if ($ubah_detail_transaksi) {
-		echo "
-			<script>
-				alert('Transaksi Barang berhasil diubah!');
-				window.location.href='detail_transaksi.php?id_transaksi=$id_transaksi';
-			</script>
-		";
+		setAlert("Berhasil!", "Transaksi Barang berhasil diubah!", "success");
+		header("Location:" . BASE_URL . "transaksi/detail_transaksi.php?id_transaksi=$id_transaksi");
+		exit;
 	} else {
+		setAlert("Gagal!", "Transaksi Barang gagal diubah!", "error");
 		echo "
 			<script>
-				alert('Transaksi Barang gagal diubah!');
 				window.history.back();
 			</script>
 		";
 	}
 }
 
+$id_user = htmlspecialchars($_SESSION['id_user']);
+$data_profile = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM user WHERE id_user = '$id_user'"));
+
 ?>
 
-<html>
+
+<!DOCTYPE html>
+<html lang="en">
+
 <head>
 	<title>Ubah Transaksi Barang - <?= $data_detail_transaksi['nama_barang']; ?></title>
+    <?php include_once '../include/head.php'; ?>
+
 </head>
-<body>
-	<a href="detail_transaksi.php?id_transaksi=<?= $id_transaksi; ?>">Kembali</a>
-	<form method="post">
-		<div>
-			<label for="id_barang">Nama Barang</label>
-			<select name="id_barang" id="id_barang">
-				<option value="<?= $data_detail_transaksi['id_barang']; ?>"><?= $data_detail_transaksi['nama_barang']; ?></option>
-				<?php foreach ($barang as $db): ?>
-					<?php if ($db['id_barang'] != $data_detail_transaksi['id_barang']): ?>
-						<option value="<?= $db['id_barang']; ?>"><?= $db['nama_barang']; ?></option>
-					<?php endif ?>
-				<?php endforeach ?>
-			</select>
-		</div>
-		<div>
-			<label for="kuantitas">Kuantitas</label>
-			<input type="number" name="kuantitas" id="kuantitas" required value="<?= $data_detail_transaksi['kuantitas']; ?>">
-		</div>
-		<div>
-			<label for="subtotal">Subtotal</label>
-			<input style="cursor: not-allowed;" type="number" name="subtotal" id="subtotal" value="<?= $data_detail_transaksi['subtotal']; ?>">
-		</div>
-		<div>
-			<button type="submit" name="btnUbahDetailTransaksi">Ubah Transaksi Barang</button>
-		</div>
-	</form>
-	
-	<script>
-	  // Initialize the barang variable with the PHP-generated $barang array
-	  const barang = <?= $barangJson; ?>;
 
-	  const idBarangSelect = document.getElementById('id_barang');
-	  const kuantitasInput = document.getElementById('kuantitas');
-	  const subtotalInput = document.getElementById('subtotal');
+<body id="page-top">
 
-	  // Calculate subtotal when either "Nama Barang" or "Kuantitas" changes
-	  idBarangSelect.addEventListener('change', () => {
-	    const selectedBarang = idBarangSelect.options[idBarangSelect.selectedIndex];
-	    updateSubtotal(selectedBarang);
-	  });
+    <!-- Page Wrapper -->
+    <div id="wrapper">
 
-	  kuantitasInput.addEventListener('input', () => {
-	    const selectedBarang = idBarangSelect.options[idBarangSelect.selectedIndex];
-	    updateSubtotal(selectedBarang);
-	  });
+        <!-- Sidebar -->
+        <?php include_once '../include/sidebar.php'; ?>
+        <!-- End of Sidebar -->
 
-	  // Function to calculate subtotal
-	  function updateSubtotal(selectedBarang) {
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+
+            <!-- Main Content -->
+            <div id="content">
+
+                <!-- Topbar -->
+                <?php include_once '../include/topbar.php'; ?>
+                <!-- End of Topbar -->
+
+                <!-- Begin Page Content -->
+                <div class="container-fluid">
+                	<div class="card shadow mb-4">
+                		<div class="card-header py-3">
+                            <div class="row">
+                                <div class="col head-left">
+                                    <h5 class="my-auto font-weight-bold text-primary">Ubah Transaksi Barang - <?= $data_detail_transaksi['nama_barang']; ?></h5>
+                                </div>
+                                <div class="col head-right">
+                                    <a href="<?= BASE_URL; ?>transaksi/detail_transaksi.php?id_transaksi=<?= $id_transaksi; ?>" class="btn btn-sm btn-primary"><i class="fas fa-fw fa-arrow-left"></i> Kembali</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+							<form method="post">
+								<div class="form-group">
+									<label for="id_barang">Nama Barang</label>
+									<select name="id_barang" id="id_barang" class="custom-select">
+										<option value="<?= $data_detail_transaksi['id_barang']; ?>"><?= $data_detail_transaksi['nama_barang']; ?></option>
+										<?php foreach ($barang as $db): ?>
+											<?php if ($db['id_barang'] != $data_detail_transaksi['id_barang']): ?>
+												<option value="<?= $db['id_barang']; ?>"><?= $db['nama_barang']; ?></option>
+											<?php endif ?>
+										<?php endforeach ?>
+									</select>
+								</div>
+								<div class="form-group">
+									<label for="kuantitas">Kuantitas</label>
+									<input type="number" name="kuantitas" id="kuantitas" class="form-control" required value="<?= $data_detail_transaksi['kuantitas']; ?>">
+								</div>
+								<div class="form-group">
+									<label for="subtotal">Subtotal</label>
+									<input style="cursor: not-allowed;" type="number" name="subtotal" id="subtotal" class="form-control" value="<?= $data_detail_transaksi['subtotal']; ?>">
+								</div>
+								<div class="form-group text-right">
+									<button type="submit" name="btnUbahDetailTransaksi" class="btn btn-primary"><i class="fas fa-fw fa-paper-plane"></i> Kirim</button>
+								</div>
+							</form>
+						</div>
+                    </div>
+            	</div>
+                <!-- /.container-fluid -->
+
+            </div>
+            <!-- End of Main Content -->
+
+            <!-- Footer -->
+            <?php include_once '../include/footer.php'; ?>
+            <!-- End of Footer -->
+
+        </div>
+        <!-- End of Content Wrapper -->
+
+    </div>
+    <!-- End of Page Wrapper -->
+
+    <!-- Scroll to Top Button-->
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+
+    <?php include_once '../include/script.php' ?>
+    <script>
+		// Initialize the barang variable with the PHP-generated $barang array
+		const barang = <?= $barangJson; ?>;
+
+		const idBarangSelect = document.getElementById('id_barang');
+		const kuantitasInput = document.getElementById('kuantitas');
+		const subtotalInput = document.getElementById('subtotal');
+
+		// Calculate subtotal when either "Nama Barang" or "Kuantitas" changes
+		idBarangSelect.addEventListener('change', () => {
+		const selectedBarang = idBarangSelect.options[idBarangSelect.selectedIndex];
+		updateSubtotal(selectedBarang);
+		});
+
+		kuantitasInput.addEventListener('input', () => {
+		const selectedBarang = idBarangSelect.options[idBarangSelect.selectedIndex];
+		updateSubtotal(selectedBarang);
+		});
+
+		// Function to calculate subtotal
+		function updateSubtotal(selectedBarang) {
 		  const idBarang = selectedBarang.value;
 		  const kuantitas = kuantitasInput.value;
 
@@ -150,7 +210,11 @@ if (isset($_POST['btnUbahDetailTransaksi'])) {
 		  const subtotal = hargaBarang * kuantitas;
 		  subtotalInput.value = subtotal;
 		}
-
 	</script>
+</body>
+
+</html>
+							
+
 </body>
 </html>

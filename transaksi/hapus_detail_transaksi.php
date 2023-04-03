@@ -2,7 +2,7 @@
 require_once '../koneksi.php';
 
 if (!isset($_SESSION['id_user'])) {
-	header("Location: login.php");
+	header("Location: ".BASE_URL."login.php");
 	exit;
 }
 
@@ -22,19 +22,13 @@ $update_stok_barang = mysqli_query($koneksi, "UPDATE barang SET stok_barang = st
 $hapus_detail_transaksi = mysqli_query($koneksi, "DELETE FROM detail_transaksi WHERE id_detail_transaksi = '$id_detail_transaksi'");
 
 if ($hapus_detail_transaksi) {
-	echo "
-		<script>
-			alert('Transaksi Barang berhasil dihapus!');
-			window.location.href='detail_transaksi.php?id_transaksi=$id_transaksi';
-		</script>
-	";
+	setAlert("Berhasil!", "Transaksi Barang berhasil dihapus!", "success");
+	header("Location:" . BASE_URL . "transaksi/detail_transaksi.php?id_transaksi=$id_transaksi");
+	exit;
 } else {
-	echo "
-		<script>
-			alert('Transaksi Barang gagal dihapus!');
-			window.location.href='detail_transaksi.php?id_transaksi=$id_transaksi';
-		</script>
-	";
+	setAlert("Gagal!", "Transaksi Barang gagal dihapus!", "error");
+	header("Location:" . BASE_URL . "transaksi/detail_transaksi.php?id_transaksi=$id_transaksi");
+	exit;
 }
 
 ?>

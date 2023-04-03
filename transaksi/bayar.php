@@ -2,7 +2,7 @@
 require_once '../koneksi.php';
 
 if (!isset($_SESSION['id_user'])) {
-	header("Location: login.php");
+	header("Location: ".BASE_URL."login.php");
 	exit;
 }
 
@@ -19,75 +19,144 @@ if (isset($_POST['btnBayar'])) {
 	$bayar = htmlspecialchars($_POST['bayar']);
 	$kembalian = htmlspecialchars($_POST['kembalian']);
 
-	$update_transaksi = mysqli_query($koneksi, "UPDATE transaksi SET bayar = '$bayar', kembalian = '$kembalian' WHERE id_transaksi = '$id_transaksi'");
-
-	if ($update_transaksi) {
+	if ($bayar < $data_transaksi['total_harga']) {
+		setAlert("Gagal!", "Uang yang dibayarkan kurang dari total harga!", "error");
 		echo "
 			<script>
-				alert('Pembayaran berhasil!');
-				window.location.href='detail_transaksi.php?id_transaksi=$id_transaksi';
-			</script>
-		";
-	} else {
-		echo "
-			<script>
-				alert('Pembayaran gagal!');
 				window.history.back();
 			</script>
 		";
+		exit;
+	}
+
+	$update_transaksi = mysqli_query($koneksi, "UPDATE transaksi SET bayar = '$bayar', kembalian = '$kembalian' WHERE id_transaksi = '$id_transaksi'");
+
+	if ($update_transaksi) {
+		setAlert("Berhasil!", "Pembayaran Transaksi Barang dengan ID Transaksi $id_transaksi berhasil!", "success");
+		header("Location:" . BASE_URL . "transaksi/detail_transaksi.php?id_transaksi=$id_transaksi");
+		exit;
+	} else {
+		setAlert("Gagal!", "Pembayaran Transaksi Barang dengan ID Transaksi $id_transaksi gagal!", "error");
+		echo "
+			<script>
+				window.history.back();
+			</script>
+		";
+		exit;
 	}
 }
 
+$id_user = htmlspecialchars($_SESSION['id_user']);
+$data_profile = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM user WHERE id_user = '$id_user'"));
 ?>
 
-<html>
-<head>
-	<title>Bayar</title>
-</head>
-<body>
-	<a href="detail_transaksi.php?id_transaksi=<?= $data_transaksi['id_transaksi']; ?>">Kembali</a>
-	<h4>Id Transaksi: <?= $data_transaksi['id_transaksi']; ?></h4>	
-	<table border="1" cellpadding="10" cellspacing="0">
-		<thead>
-			<tr>
-				<th>No.</th>
-				<th>Nama Barang</th>
-				<th>Kuantitas</th>
-				<th>Subtotal</th>
-				<th>Aksi</th>
-			</tr>
-		</thead>
-		<tbody>
-			<?php $i = 1; ?>
-			<?php foreach ($detail_transaksi as $ddt): ?>
-				<tr>
-					<td><?= $i++; ?></td>
-					<td><?= $ddt['nama_barang']; ?></td>
-					<td><?= $ddt['kuantitas']; ?></td>
-					<td>Rp. <?= str_replace(",", ".", number_format($ddt['subtotal'])); ?></td>
-					<td>
-						<a href="ubah_detail_transaksi.php?id_detail_transaksi=<?= $ddt['id_detail_transaksi']; ?>&id_transaksi=<?= $id_transaksi; ?>">Ubah</a>
-						<a onclick="return confirm('Apakah Anda yakin ingin menghapus transaksi <?= $ddt['nama_barang']; ?>?')" href="hapus_detail_transaksi.php?id_detail_transaksi=<?= $ddt['id_detail_transaksi']; ?>&id_transaksi=<?= $id_transaksi; ?>">Hapus</a>
-					</td>
-				</tr>
-			<?php endforeach ?>
-		</tbody>
-	</table>
-	<h4>Total Harga: Rp. <?= str_replace(",", ".", number_format($data_transaksi['total_harga'])); ?></h4>
-	<form method="post">
-	  <div>
-	    <label for="bayar">Bayar</label>
-	    <input type="number" name="bayar" id="bayar" required>
-	  </div>
-	  <div>
-	    <label for="kembalian">Kembalian</label>
-	    <input style="cursor: not-allowed;" type="number" name="kembalian" id="kembalian">
-	  </div>
-	  <div>
-	    <button type="submit" name="btnBayar">Bayar</button>
-	  </div>
-	</form>
 
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Pembayaran Transaksi Barang - ID Transaksi <?= $id_transaksi; ?></title>
+    <?php include_once '../include/head.php'; ?>
+</head>
+
+<body id="page-top">
+
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+
+        <!-- Sidebar -->
+        <?php include_once '../include/sidebar.php'; ?>
+        <!-- End of Sidebar -->
+
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+
+            <!-- Main Content -->
+            <div id="content">
+
+                <!-- Topbar -->
+                <?php include_once '../include/topbar.php'; ?>
+                <!-- End of Topbar -->
+
+                <!-- Begin Page Content -->
+                <div class="container-fluid">
+                	<div class="card shadow mb-4">
+                		<div class="card-header py-3">
+                            <div class="row">
+                                <div class="col head-left">
+                                    <h5 class="my-auto font-weight-bold text-primary">Pembayaran ID Transaksi - <?= $data_transaksi['id_transaksi']; ?></h5>
+                                </div>
+                                <div class="col head-right">
+                                    <a href="<?= BASE_URL; ?>transaksi/detail_transaksi.php?id_transaksi=<?= $id_transaksi; ?>" class="btn btn-sm btn-primary"><i class="fas fa-fw fa-arrow-left"></i> Kembali</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                            	<table class="table table-bordered" width="100%" cellspacing="0">
+									<thead>
+										<tr>
+											<th>No.</th>
+											<th>Nama Barang</th>
+											<th>Kuantitas</th>
+											<th>Subtotal</th>
+										</tr>
+									</thead>
+									<tbody>
+										<?php $i = 1; ?>
+										<?php foreach ($detail_transaksi as $ddt): ?>
+											<tr>
+												<td><?= $i++; ?></td>
+												<td><?= $ddt['nama_barang']; ?></td>
+												<td><?= $ddt['kuantitas']; ?></td>
+												<td>Rp. <?= str_replace(",", ".", number_format($ddt['subtotal'])); ?></td>
+											</tr>
+										<?php endforeach ?>
+									</tbody>
+								</table>
+                            </div>
+							<hr>
+							<form method="post">
+							  <div class="form-group">
+							    <label for="total_harga">Total Harga</label>
+							    <input type="text" disabled name="total_harga" id="total_harga" class="not-allowed form-control" value="Rp. <?= str_replace(",", ".", number_format($data_transaksi['total_harga'])); ?>">
+							  </div>
+							  <div class="form-group">
+							    <label for="bayar">Bayar</label>
+							    <input type="number" name="bayar" id="bayar" class="form-control" required>
+							  </div>
+							  <div class="form-group">
+							    <label for="kembalian">Kembalian</label>
+							    <input style="cursor: not-allowed;" type="number" name="kembalian" id="kembalian" class="form-control">
+							  </div>
+							  <div class="form-group text-right">
+							    <button type="submit" name="btnBayar" class="btn btn-primary"><i class="fas fa-fw fa-paper-plane"></i> Bayar</button>
+							  </div>
+							</form>
+						</div>
+                    </div>
+            	</div>
+                <!-- /.container-fluid -->
+
+            </div>
+            <!-- End of Main Content -->
+
+            <!-- Footer -->
+            <?php include_once '../include/footer.php'; ?>
+            <!-- End of Footer -->
+
+        </div>
+        <!-- End of Content Wrapper -->
+
+    </div>
+    <!-- End of Page Wrapper -->
+
+    <!-- Scroll to Top Button-->
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+
+    <?php include_once '../include/script.php' ?>
 	<script>
 	  // Get the "bayar" and "kembalian" input fields
 	  const bayarInput = document.getElementById("bayar");

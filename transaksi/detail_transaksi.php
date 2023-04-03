@@ -53,12 +53,14 @@ $data_profile = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM user WH
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
                 	<!-- Page Heading -->
-                	<div class="row">
-                		<div class="col">
+                	<div class="row mb-2">
+                		<div class="col-lg-4">
                             <a href="<?= BASE_URL; ?>transaksi/index.php" class="btn btn-sm btn-primary"><i class="fas fa-fw fa-arrow-left"></i> Kembali</a>
-							<h4>Total Harga: Rp. <?= str_replace(",", ".", number_format($data_transaksi['total_harga'])); ?></h4>
-							<h4>Bayar: Rp. <?= str_replace(",", ".", number_format($data_transaksi['bayar'])); ?></h4>
-							<h4>Kembalian: Rp. <?= str_replace(",", ".", number_format($data_transaksi['kembalian'])); ?></h4>
+                			<ul class="list-group my-2">
+							  <li class="list-group-item">Total Harga: Rp. <?= str_replace(",", ".", number_format($data_transaksi['total_harga'])); ?></li>
+							  <li class="list-group-item">Bayar: Rp. <?= str_replace(",", ".", number_format($data_transaksi['bayar'])); ?></li>
+							  <li class="list-group-item">Kembalian: Rp. <?= str_replace(",", ".", number_format($data_transaksi['kembalian'])); ?></li>
+							</ul>
 							<?php if ($data_transaksi['bayar'] == '0' && $data_transaksi['total_harga'] != '0'): ?>
 								<a class="btn btn-danger mb-2" href="bayar.php?id_transaksi=<?= $data_transaksi['id_transaksi']; ?>"><i class="fas fa-fw fa-exclamation"></i> Bayar</a>
 							<?php endif ?>
