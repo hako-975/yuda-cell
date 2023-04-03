@@ -64,6 +64,13 @@
         </div>
     </li>
 
+    <hr class="sidebar-divider my-0">
+
+    <li class="nav-item">
+        <a class="nav-link" href="<?= BASE_URL; ?>laporan/index.php">
+            <i class="fas fa-fw fa-file-alt"></i>
+            <span>Laporan</span></a>
+    </li>
 
     <!-- Divider -->
     <hr class="sidebar-divider d-none d-md-block">

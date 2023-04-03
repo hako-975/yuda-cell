@@ -2,7 +2,7 @@
 require_once '../koneksi.php';
 
 if (!isset($_SESSION['id_user'])) {
-	header("Location: login.php");
+	header("Location: ".BASE_URL."login.php");
 	exit;
 }
 
@@ -25,9 +25,9 @@ if (isset($_POST['btnTambahDetailTransaksi'])) {
 	$subtotal = htmlspecialchars($_POST['subtotal']);
 
 	if ($id_barang == 0) {
+		setAlert("Gagal!", "Pilih Barang terlebih dahulu!", "error");
 		echo "
 			<script>
-				alert('Pilih Barang terlebih dahulu!');
 				window.history.back();
 			</script>
 		";
@@ -44,54 +44,115 @@ if (isset($_POST['btnTambahDetailTransaksi'])) {
 
 
 	if ($tambah_detail_transaksi) {
-		echo "
-			<script>
-				alert('Transaksi Barang berhasil ditambahkan!');
-				window.location.href='detail_transaksi.php?id_transaksi=$id_transaksi';
-			</script>
-		";
+		setAlert("Berhasil!", "Transaksi Barang berhasil ditambahkan!", "success");
+		header("Location:" . BASE_URL . "transaksi/detail_transaksi.php?id_transaksi=$id_transaksi");
+		exit;
 	} else {
+		setAlert("Gagal!", "Transaksi Barang gagal ditambahkan!", "error");
 		echo "
 			<script>
-				alert('Transaksi Barang gagal ditambahkan!');
 				window.history.back();
 			</script>
 		";
 	}
 }
 
+
+$id_user = htmlspecialchars($_SESSION['id_user']);
+$data_profile = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM user WHERE id_user = '$id_user'"));
+
 ?>
 
-<html>
+
+<!DOCTYPE html>
+<html lang="en">
+
 <head>
-	<title>Tambah Transaksi Barang</title>
+    <title>Tambah Transaksi Barang - ID Transaksi <?= $id_transaksi; ?></title>
+    <?php include_once '../include/head.php'; ?>
+
 </head>
-<body>
-	<a href="detail_transaksi.php?id_transaksi=<?= $id_transaksi; ?>">Kembali</a>
-	<form method="post">
-		<div>
-			<label for="id_barang">Nama Barang</label>
-			<select name="id_barang" id="id_barang">
-				<option value="0">--- Pilih Nama Barang ---</option>
-				<?php foreach ($barang as $db): ?>
-					<option value="<?= $db['id_barang']; ?>"><?= $db['nama_barang']; ?></option>
-				<?php endforeach ?>
-			</select>
-		</div>
-		<div>
-			<label for="kuantitas">Kuantitas</label>
-			<input type="number" name="kuantitas" id="kuantitas" required>
-		</div>
-		<div>
-			<label for="subtotal">Subtotal</label>
-			<input style="cursor: not-allowed;" type="number" name="subtotal" id="subtotal">
-		</div>
-		<div>
-			<button type="submit" name="btnTambahDetailTransaksi">Tambah Transaksi Barang</button>
-		</div>
-	</form>
-	
-	<script>
+
+<body id="page-top">
+
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+
+        <!-- Sidebar -->
+        <?php include_once '../include/sidebar.php'; ?>
+        <!-- End of Sidebar -->
+
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+
+            <!-- Main Content -->
+            <div id="content">
+
+                <!-- Topbar -->
+                <?php include_once '../include/topbar.php'; ?>
+                <!-- End of Topbar -->
+
+                <!-- Begin Page Content -->
+                <div class="container-fluid">
+                	<div class="card shadow mb-4">
+                		<div class="card-header py-3">
+                            <div class="row">
+                                <div class="col head-left">
+                                    <h5 class="my-auto font-weight-bold text-primary">Tambah Jenis Barang</h5>
+                                </div>
+                                <div class="col head-right">
+                                    <a href="<?= BASE_URL; ?>transaksi/index.php" class="btn btn-sm btn-primary"><i class="fas fa-fw fa-arrow-left"></i> Kembali</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+							<form method="post">
+								<div class="form-group">
+									<label for="id_barang">Nama Barang</label>
+									<select name="id_barang" id="id_barang" class="custom-select">
+										<option value="0">--- Pilih Nama Barang ---</option>
+										<?php foreach ($barang as $db): ?>
+											<option value="<?= $db['id_barang']; ?>"><?= $db['nama_barang']; ?></option>
+										<?php endforeach ?>
+									</select>
+								</div>
+								<div class="form-group">
+									<label for="kuantitas">Kuantitas</label>
+									<input type="number" name="kuantitas" id="kuantitas" class="form-control" required>
+								</div>
+								<div class="form-group">
+									<label for="subtotal">Subtotal</label>
+									<input style="cursor: not-allowed;" type="number" name="subtotal" id="subtotal" class="form-control">
+								</div>
+								<div class="form-group text-right">
+									<button type="submit" name="btnTambahDetailTransaksi" class="btn btn-primary"><i class="fas fa-fw fa-paper-plane"></i> Kirim</button>
+								</div>
+							</form>
+						</div>
+                    </div>
+            	</div>
+                <!-- /.container-fluid -->
+
+            </div>
+            <!-- End of Main Content -->
+
+            <!-- Footer -->
+            <?php include_once '../include/footer.php'; ?>
+            <!-- End of Footer -->
+
+        </div>
+        <!-- End of Content Wrapper -->
+
+    </div>
+    <!-- End of Page Wrapper -->
+
+    <!-- Scroll to Top Button-->
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+
+    <?php include_once '../include/script.php' ?>
+    <script>
 	  // Initialize the barang variable with the PHP-generated $barang array
 	  const barang = <?= $barangJson; ?>;
 
@@ -125,7 +186,11 @@ if (isset($_POST['btnTambahDetailTransaksi'])) {
 		  const subtotal = hargaBarang * kuantitas;
 		  subtotalInput.value = subtotal;
 		}
-
 	</script>
+
+</body>
+
+</html>
+	
 </body>
 </html>

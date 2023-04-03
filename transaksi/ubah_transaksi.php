@@ -8,7 +8,7 @@ if (!isset($_SESSION['id_user'])) {
 
 
 $id_transaksi = htmlspecialchars($_GET['id_transaksi']);
-$data_transaksi = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM transaksi INNER JOIN user ON transaksi.id_transaksi = user.id_user WHERE id_transaksi = '$id_transaksi'"));
+$data_transaksi = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM transaksi INNER JOIN user ON transaksi.id_user = user.id_user WHERE transaksi.id_transaksi = '$id_transaksi'"));
 
 if (isset($_POST['btnUbahTransaksi'])) {
 	$tanggal_transaksi = htmlspecialchars($_POST['tanggal_transaksi']);
@@ -32,6 +32,7 @@ if (isset($_POST['btnUbahTransaksi'])) {
 
 $id_user = htmlspecialchars($_SESSION['id_user']);
 $data_profile = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM user WHERE id_user = '$id_user'"));
+
 ?>
 
 <!DOCTYPE html>

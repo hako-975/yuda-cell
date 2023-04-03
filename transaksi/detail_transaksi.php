@@ -55,12 +55,12 @@ $data_profile = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM user WH
                 	<!-- Page Heading -->
                 	<div class="row">
                 		<div class="col">
-                			<h4>Id Transaksi: <?= $data_transaksi['id_transaksi']; ?></h4>
+                            <a href="<?= BASE_URL; ?>transaksi/index.php" class="btn btn-sm btn-primary"><i class="fas fa-fw fa-arrow-left"></i> Kembali</a>
 							<h4>Total Harga: Rp. <?= str_replace(",", ".", number_format($data_transaksi['total_harga'])); ?></h4>
 							<h4>Bayar: Rp. <?= str_replace(",", ".", number_format($data_transaksi['bayar'])); ?></h4>
 							<h4>Kembalian: Rp. <?= str_replace(",", ".", number_format($data_transaksi['kembalian'])); ?></h4>
-							<?php if ($data_transaksi['bayar'] == '0'): ?>
-								<a class="btn btn-danger" href="bayar.php?id_transaksi=<?= $data_transaksi['id_transaksi']; ?>"><i class="fas fa-fw fa-exclamation"></i> Bayar</a>
+							<?php if ($data_transaksi['bayar'] == '0' && $data_transaksi['total_harga'] != '0'): ?>
+								<a class="btn btn-danger mb-2" href="bayar.php?id_transaksi=<?= $data_transaksi['id_transaksi']; ?>"><i class="fas fa-fw fa-exclamation"></i> Bayar</a>
 							<?php endif ?>
                 		</div>
                 	</div>
@@ -68,11 +68,13 @@ $data_profile = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM user WH
                         <div class="card-header py-3">
                             <div class="row">
                                 <div class="col head-left">
-                                    <h5 class="my-auto font-weight-bold text-primary">ID Transaksi - <?= $data_transaksi['id_transaksi']; ?></h5>
+                                    <h5 class="my-auto font-weight-bold text-primary">Pembayaran ID Transaksi - <?= $data_transaksi['id_transaksi']; ?></h5>
                                 </div>
-                                <div class="col head-right">
-									<a href="<?= BASE_URL; ?>tambah_detail_transaksi.php?id_transaksi=<?= $data_transaksi['id_transaksi']; ?>" class="btn btn-sm btn-primary"><i class="fas fa-fw fa-plus"></i> Tambah Transaksi Barang</a>
-                                </div>
+                                <?php if ($data_transaksi['bayar'] == 0): ?>
+                                	<div class="col head-right">
+										<a href="<?= BASE_URL; ?>transaksi/tambah_detail_transaksi.php?id_transaksi=<?= $data_transaksi['id_transaksi']; ?>" class="btn btn-sm btn-primary"><i class="fas fa-fw fa-plus"></i> Tambah Transaksi Barang</a>
+	                                </div>
+                                <?php endif ?>
                             </div>
                         </div>
                         <div class="card-body">
@@ -84,7 +86,9 @@ $data_profile = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM user WH
 											<th>Nama Barang</th>
 											<th>Kuantitas</th>
 											<th>Subtotal</th>
-											<th>Aksi</th>
+                            				<?php if ($data_transaksi['bayar'] == 0): ?>
+												<th>Aksi</th>
+											<?php endif ?>
 										</tr>
 									</thead>
 									<tbody>
@@ -95,10 +99,12 @@ $data_profile = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM user WH
 												<td><?= $ddt['nama_barang']; ?></td>
 												<td><?= $ddt['kuantitas']; ?></td>
 												<td>Rp. <?= str_replace(",", ".", number_format($ddt['subtotal'])); ?></td>
-												<td>
-													<a class="btn btn-sm btn-success" href="ubah_detail_transaksi.php?id_detail_transaksi=<?= $ddt['id_detail_transaksi']; ?>&id_transaksi=<?= $id_transaksi; ?>"><i class="fas fa-fw fa-edit"></i> Ubah</a>
-													<a class="btn btn-sm btn-danger btn-delete" data-nama="Data Transaksi Barang <?= $ddt['nama_barang']; ?> akan terhapus!" href="hapus_detail_transaksi.php?id_detail_transaksi=<?= $ddt['id_detail_transaksi']; ?>&id_transaksi=<?= $id_transaksi; ?>"><i class="fas fa-fw fa-trash"></i> Hapus</a>
-												</td>
+                                				<?php if ($data_transaksi['bayar'] == 0): ?>
+													<td>
+														<a class="btn btn-sm btn-success" href="ubah_detail_transaksi.php?id_detail_transaksi=<?= $ddt['id_detail_transaksi']; ?>&id_transaksi=<?= $id_transaksi; ?>"><i class="fas fa-fw fa-edit"></i> Ubah</a>
+														<a class="btn btn-sm btn-danger btn-delete" data-nama="Data Transaksi Barang <?= $ddt['nama_barang']; ?> akan terhapus!" href="hapus_detail_transaksi.php?id_detail_transaksi=<?= $ddt['id_detail_transaksi']; ?>&id_transaksi=<?= $id_transaksi; ?>"><i class="fas fa-fw fa-trash"></i> Hapus</a>
+													</td>
+												<?php endif ?>
 											</tr>
 										<?php endforeach ?>
 									</tbody>
