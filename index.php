@@ -13,11 +13,13 @@ $id_user = htmlspecialchars($_SESSION['id_user']);
 $data_profile = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM user WHERE id_user = '$id_user'"));
 
 $omset = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT sum(total_harga) as omset FROM transaksi"));
-$laba = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT SUM((b.harga_jual - b.harga_beli) * dt.kuantitas) AS total_laba
-FROM detail_transaksi dt
-INNER JOIN barang b ON dt.id_barang = b.id_barang"));
+$laba = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT SUM((b.harga_jual - b.harga_beli) * dt.kuantitas) AS laba FROM detail_transaksi dt INNER JOIN barang b ON dt.id_barang = b.id_barang"));
+
+$jumlah_transaksi = mysqli_num_rows(mysqli_query($koneksi, "SELECT * FROM transaksi"));
 
 $barang_paling_laku = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT barang.id_barang, barang.nama_barang, SUM(kuantitas) as laku FROM detail_transaksi INNER JOIN barang ON detail_transaksi.id_barang = barang.id_barang GROUP BY detail_transaksi.id_barang ORDER BY laku DESC LIMIT 1"));
+
+$transaksi = mysqli_query($koneksi, "SELECT * FROM transaksi INNER JOIN user ON transaksi.id_user = user.id_user ORDER BY tanggal_transaksi DESC");
 
 ?>
 
@@ -50,7 +52,7 @@ $barang_paling_laku = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT barang.i
                 <!-- End of Topbar -->
 
                 <!-- Begin Page Content -->
-                <div class="container-fluid">
+                <div class="container-fluid bg-white">
 
                     <!-- Page Heading -->
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
@@ -83,7 +85,7 @@ $barang_paling_laku = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT barang.i
                                         <div class="col mr-2">
                                             <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
                                                 Laba</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">Rp. <?= str_replace(",", ".", number_format($laba['total_laba'])); ?></div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">Rp. <?= str_replace(",", ".", number_format($laba['laba'])); ?></div>
                                         </div>
                                     </div>
                                 </div>
@@ -97,7 +99,7 @@ $barang_paling_laku = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT barang.i
                                         <div class="col mr-2">
                                             <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
                                                 Jumlah Transaksi</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">3</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $jumlah_transaksi; ?></div>
                                         </div>
                                     </div>
                                 </div>
@@ -111,7 +113,13 @@ $barang_paling_laku = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT barang.i
                                         <div class="col mr-2">
                                             <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
                                                 Barang Paling Laku</div>
-                                            <div class="h6 mb-0 font-weight-bold text-gray-800"><?= $barang_paling_laku['nama_barang']; ?> (<?= $barang_paling_laku['laku']; ?>)</div>
+                                            <div class="h6 mb-0 font-weight-bold text-gray-800">
+                                                <?php if ($barang_paling_laku): ?>
+                                                    <?= $barang_paling_laku['nama_barang']; ?> (<?= $barang_paling_laku['laku']; ?>)
+                                                <?php else: ?>
+                                                    Tidak Ada
+                                                <?php endif ?>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -119,6 +127,50 @@ $barang_paling_laku = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT barang.i
                         </div>
                     </div>
 
+                    <div class="row">
+                        <div class="col">
+                            <h4>Transaksi Terbaru</h4>
+                            <div class="table-responsive">
+                                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th>No.</th>
+                                            <th>Id Transaksi</th>
+                                            <th>Tanggal Transaksi</th>
+                                            <th>Total Harga</th>
+                                            <th>Bayar</th>
+                                            <th>Kembalian</th>
+                                            <th>User</th>
+                                            <th>Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php $i = 1; ?>
+                                        <?php foreach ($transaksi as $dt): ?>
+                                            <tr>
+                                                <td><?= $i++; ?></td>
+                                                <td><?= $dt['id_transaksi']; ?></td>
+                                                <td><?= $dt['tanggal_transaksi']; ?></td>
+                                                <td>Rp. <?= str_replace(",", ".", number_format($dt['total_harga'])); ?></td>
+                                                <td>Rp. <?= str_replace(",", ".", number_format($dt['bayar'])); ?></td>
+                                                <td>Rp. <?= str_replace(",", ".", number_format($dt['kembalian'])); ?></td>
+                                                <td><?= $dt['username']; ?></td>
+                                                <td>
+                                                    <?php if ($dt['bayar'] == 0): ?>
+                                                        <a class="btn btn-sm btn-info m-1" href="detail_transaksi.php?id_transaksi=<?= $dt['id_transaksi']; ?>"><i class="fas fa-fw fa-exclamation"></i> Bayar</a>
+                                                    <?php else: ?>
+                                                        <a class="btn btn-sm btn-info m-1" href="detail_transaksi.php?id_transaksi=<?= $dt['id_transaksi']; ?>"><i class="fas fa-fw fa-info"></i> Detail</a>
+                                                    <?php endif ?>
+                                                    <a class="btn btn-sm btn-success m-1" href="ubah_transaksi.php?id_transaksi=<?= $dt['id_transaksi']; ?>"><i class="fas fa-fw fa-edit"></i> Ubah</a>
+                                                    <a class="btn btn-sm btn-danger m-1 btn-delete" data-nama="Transaksi dengan ID Transaksi <?= $dt['id_transaksi']; ?> akan terhapus!" href="hapus_transaksi.php?id_transaksi=<?= $dt['id_transaksi']; ?>"><i class="fas fa-fw fa-trash"></i> Hapus</a>
+                                                </td>
+                                            </tr>
+                                        <?php endforeach ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                     <!-- Content Row -->
 
                 </div>
