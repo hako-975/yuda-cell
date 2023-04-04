@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 30 Mar 2023 pada 19.25
+-- Waktu pembuatan: 04 Apr 2023 pada 17.32
 -- Versi server: 10.4.27-MariaDB
 -- Versi PHP: 8.2.0
 
@@ -41,7 +41,7 @@ CREATE TABLE `barang` (
 --
 
 INSERT INTO `barang` (`id_barang`, `nama_barang`, `harga_beli`, `harga_jual`, `stok_barang`, `id_jenis_barang`) VALUES
-(2, 'Headset', 9000, 13000, 4, 3);
+(2, 'Headset', 9000, 13000, 0, 3);
 
 -- --------------------------------------------------------
 
@@ -56,6 +56,14 @@ CREATE TABLE `detail_transaksi` (
   `kuantitas` int(11) NOT NULL,
   `subtotal` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data untuk tabel `detail_transaksi`
+--
+
+INSERT INTO `detail_transaksi` (`id_detail_transaksi`, `id_transaksi`, `id_barang`, `kuantitas`, `subtotal`) VALUES
+(1, 1, 2, 2, 26000),
+(2, 2, 2, 2, 26000);
 
 -- --------------------------------------------------------
 
@@ -131,6 +139,14 @@ CREATE TABLE `transaksi` (
   `id_user` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data untuk tabel `transaksi`
+--
+
+INSERT INTO `transaksi` (`id_transaksi`, `tanggal_transaksi`, `total_harga`, `bayar`, `kembalian`, `id_user`) VALUES
+(1, '2023-04-04 20:47:39', 26000, 50000, 24000, 1),
+(2, '2023-04-04 21:14:56', 26000, 50000, 24000, 1);
+
 -- --------------------------------------------------------
 
 --
@@ -152,7 +168,7 @@ CREATE TABLE `user` (
 
 INSERT INTO `user` (`id_user`, `username`, `password`, `hak_akses`, `nama_lengkap`, `no_telp_user`) VALUES
 (1, 'admin', '$2y$10$YyhiL0fHVqiT9MuTPSkFhO5Napx1HFY3qwe6TIzdSezFyJiR9N4bu', 'administrator', 'Admin', '081574427863'),
-(7, 'andri123', '$2y$10$M7GbAM/7exK97MuWdntASOUA34UbQdJXZJSV7Fb/RfaMFTR5yCnfG', 'operator', 'Andri Firman Saputra', '087808675313');
+(11, 'andri123', '$2y$10$4xjaJpGcV1E0ncnynzzmxOCSFUuT7DjSvei6NYC/xEpUTcnKoU5R6', 'operator', 'Andri Firman Saputra', '087808675313');
 
 --
 -- Indexes for dumped tables
@@ -220,7 +236,7 @@ ALTER TABLE `barang`
 -- AUTO_INCREMENT untuk tabel `detail_transaksi`
 --
 ALTER TABLE `detail_transaksi`
-  MODIFY `id_detail_transaksi` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_detail_transaksi` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT untuk tabel `jenis_barang`
@@ -244,13 +260,13 @@ ALTER TABLE `supplier`
 -- AUTO_INCREMENT untuk tabel `transaksi`
 --
 ALTER TABLE `transaksi`
-  MODIFY `id_transaksi` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_transaksi` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT untuk tabel `user`
 --
 ALTER TABLE `user`
-  MODIFY `id_user` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id_user` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

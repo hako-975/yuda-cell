@@ -52,7 +52,7 @@ $transaksi = mysqli_query($koneksi, "SELECT * FROM transaksi INNER JOIN user ON 
                 <!-- End of Topbar -->
 
                 <!-- Begin Page Content -->
-                <div class="container-fluid bg-white">
+                <div class="container-fluid bg-white rounded p-3">
 
                     <!-- Page Heading -->
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
