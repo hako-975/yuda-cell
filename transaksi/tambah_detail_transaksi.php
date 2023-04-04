@@ -112,7 +112,7 @@ $data_profile = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM user WH
 									<select name="id_barang" id="id_barang" class="custom-select">
 										<option value="0">--- Pilih Nama Barang ---</option>
 										<?php foreach ($barang as $db): ?>
-											<option value="<?= $db['id_barang']; ?>"><?= $db['nama_barang']; ?></option>
+											<option value="<?= $db['id_barang']; ?>"><?= $db['nama_barang']; ?> (<?= $db['stok_barang']; ?>)</option>
 										<?php endforeach ?>
 									</select>
 								</div>

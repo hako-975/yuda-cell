@@ -49,9 +49,11 @@ $data_profile = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM user WH
                                 <div class="col head-left">
                                     <h5 class="my-auto font-weight-bold text-primary">User</h5>
                                 </div>
-                                <div class="col head-right">
-                                    <a href="<?= BASE_URL; ?>user/tambah_user.php" class="btn btn-sm btn-primary"><i class="fas fa-fw fa-plus"></i> Tambah User</a>
-                                </div>
+                                <?php if ($data_profile['hak_akses'] == 'administrator'): ?>
+                                    <div class="col head-right">
+                                        <a href="<?= BASE_URL; ?>user/tambah_user.php" class="btn btn-sm btn-primary"><i class="fas fa-fw fa-plus"></i> Tambah User</a>
+                                    </div>
+                                <?php endif ?>
                             </div>
                         </div>
                         <div class="card-body">
@@ -78,14 +80,14 @@ $data_profile = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM user WH
                                                 <td><?= ucwords($du['hak_akses']); ?></td>
                                                 <td><?= $du['nama_lengkap']; ?></td>
                                                 <td><?= $du['no_telp_user']; ?></td>
-                                                <td>
-                                                    <?php if ($data_profile['hak_akses'] == 'administrator'): ?>
+                                                <?php if ($data_profile['hak_akses'] == 'administrator'): ?>
+                                                    <td>
                                                         <?php if ($du['hak_akses'] != 'administrator'): ?>
                                                                 <a class="btn btn-sm btn-success" href="ubah_user.php?id_user=<?= $du['id_user']; ?>"><i class="fas fa-fw fa-edit"></i> Ubah</a>
                                                                 <a class="btn btn-sm btn-danger btn-delete" data-nama="User dengan username <?= $du['username']; ?> akan terhapus!" href="hapus_user.php?id_user=<?= $du['id_user']; ?>"><i class="fas fa-fw fa-trash"></i> Hapus</a>
                                                         <?php endif ?>
-                                                    <?php endif ?>
-                                                </td>
+                                                    </td>
+                                                <?php endif ?>
                                             </tr>
                                         <?php endforeach ?>
                                     </tbody>

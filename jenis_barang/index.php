@@ -50,9 +50,11 @@ $data_profile = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM user WH
                                 <div class="col head-left">
                                     <h5 class="my-auto font-weight-bold text-primary">Jenis Barang</h5>
                                 </div>
-                                <div class="col head-right">
-                                    <a href="<?= BASE_URL; ?>jenis_barang/tambah_jenis_barang.php" class="btn btn-sm btn-primary"><i class="fas fa-fw fa-plus"></i> Tambah Jenis Barang</a>
-                                </div>
+                                <?php if ($data_profile['hak_akses'] == 'administrator'): ?>
+                                    <div class="col head-right">
+                                        <a href="<?= BASE_URL; ?>jenis_barang/tambah_jenis_barang.php" class="btn btn-sm btn-primary"><i class="fas fa-fw fa-plus"></i> Tambah Jenis Barang</a>
+                                    </div>
+                                <?php endif ?>
                             </div>
                         </div>
                         <div class="card-body">

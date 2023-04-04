@@ -57,9 +57,9 @@
         </a>
         <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item" href="<?= BASE_URL; ?>user/index.php">User</a>
                 <a class="collapse-item" href="<?= BASE_URL; ?>jenis_barang/index.php">Jenis Barang</a>
                 <a class="collapse-item" href="<?= BASE_URL; ?>supplier/index.php">Supplier</a>
+                <a class="collapse-item" href="<?= BASE_URL; ?>user/index.php">User</a>
             </div>
         </div>
     </li>
