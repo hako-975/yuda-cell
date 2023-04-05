@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 04 Apr 2023 pada 17.32
+-- Waktu pembuatan: 05 Apr 2023 pada 21.07
 -- Versi server: 10.4.27-MariaDB
 -- Versi PHP: 8.2.0
 
@@ -145,7 +145,9 @@ CREATE TABLE `transaksi` (
 
 INSERT INTO `transaksi` (`id_transaksi`, `tanggal_transaksi`, `total_harga`, `bayar`, `kembalian`, `id_user`) VALUES
 (1, '2023-04-04 20:47:39', 26000, 50000, 24000, 1),
-(2, '2023-04-04 21:14:56', 26000, 50000, 24000, 1);
+(2, '2023-04-04 21:14:56', 26000, 50000, 24000, 1),
+(4, '2023-04-06 01:29:11', 0, 0, 0, 1),
+(5, '2023-04-06 02:07:43', 0, 0, 0, 1);
 
 -- --------------------------------------------------------
 
@@ -236,7 +238,7 @@ ALTER TABLE `barang`
 -- AUTO_INCREMENT untuk tabel `detail_transaksi`
 --
 ALTER TABLE `detail_transaksi`
-  MODIFY `id_detail_transaksi` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_detail_transaksi` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT untuk tabel `jenis_barang`
@@ -260,7 +262,7 @@ ALTER TABLE `supplier`
 -- AUTO_INCREMENT untuk tabel `transaksi`
 --
 ALTER TABLE `transaksi`
-  MODIFY `id_transaksi` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id_transaksi` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT untuk tabel `user`
