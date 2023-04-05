@@ -129,7 +129,14 @@ $transaksi = mysqli_query($koneksi, "SELECT * FROM transaksi INNER JOIN user ON 
 
                     <div class="row">
                         <div class="col">
-                            <h4>Transaksi Terbaru</h4>
+                            <div class="row my-3">
+                                <div class="col head-left">
+                                    <h5 class="my-auto font-weight-bold text-primary">Transaksi Terbaru</h5>
+                                </div>
+                                <div class="col head-right">
+                                    <a href="<?= BASE_URL; ?>transaksi/tambah_transaksi.php" class="btn btn-sm btn-primary"><i class="fas fa-fw fa-plus"></i> Tambah Transaksi</a>
+                                </div>
+                            </div>
                             <div class="table-responsive">
                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                     <thead>
