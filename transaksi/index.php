@@ -83,11 +83,11 @@ $data_profile = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM user WH
 												<td><?= $dt['username']; ?></td>
 												<td>
                                                     <?php if ($dt['bayar'] == 0): ?>
-                                                        <a class="btn btn-sm btn-info m-1" href="detail_transaksi.php?id_transaksi=<?= $dt['id_transaksi']; ?>"><i class="fas fa-fw fa-exclamation"></i> Bayar</a>
+                                                        <a class="btn btn-sm btn-info m-1" href="<?= BASE_URL; ?>transaksi/detail_transaksi.php?id_transaksi=<?= $dt['id_transaksi']; ?>"><i class="fas fa-fw fa-exclamation"></i> Bayar</a>
                                                     <?php else: ?>
-                                                        <a class="btn btn-sm btn-info m-1" href="detail_transaksi.php?id_transaksi=<?= $dt['id_transaksi']; ?>"><i class="fas fa-fw fa-info"></i> Detail</a>
+                                                        <a class="btn btn-sm btn-info m-1" href="<?= BASE_URL; ?>transaksi/detail_transaksi.php?id_transaksi=<?= $dt['id_transaksi']; ?>"><i class="fas fa-fw fa-info"></i> Detail</a>
                                                     <?php endif ?>
-													<a class="btn btn-sm btn-success m-1" href="ubah_transaksi.php?id_transaksi=<?= $dt['id_transaksi']; ?>"><i class="fas fa-fw fa-edit"></i> Ubah</a>
+													<a class="btn btn-sm btn-success m-1" href="<?= BASE_URL; ?>transaksi/ubah_transaksi.php?id_transaksi=<?= $dt['id_transaksi']; ?>"><i class="fas fa-fw fa-edit"></i> Ubah</a>
 													<a class="btn btn-sm btn-danger m-1 btn-delete" data-nama="Transaksi dengan ID Transaksi <?= $dt['id_transaksi']; ?> akan terhapus!" href="hapus_transaksi.php?id_transaksi=<?= $dt['id_transaksi']; ?>"><i class="fas fa-fw fa-trash"></i> Hapus</a>
 												</td>
 											</tr>

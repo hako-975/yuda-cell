@@ -21,6 +21,27 @@ $barang_paling_laku = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT barang.i
 
 $transaksi = mysqli_query($koneksi, "SELECT * FROM transaksi INNER JOIN user ON transaksi.id_user = user.id_user ORDER BY tanggal_transaksi DESC");
 
+
+if (isset($_GET['btnFilter'])) {
+    $dari_tanggal = htmlspecialchars($_GET['dari_tanggal']);
+    $sampai_tanggal = htmlspecialchars($_GET['sampai_tanggal']);
+
+    $dari_tanggal_baru =  $dari_tanggal . ' 00:00:00';
+    $sampai_tanggal_baru =  $sampai_tanggal . ' 23:59:59';
+
+    $omset = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT sum(total_harga) as omset FROM transaksi WHERE tanggal_transaksi BETWEEN '$dari_tanggal_baru' AND '$sampai_tanggal_baru'"));
+    $laba = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT SUM((b.harga_jual - b.harga_beli) * dt.kuantitas) AS laba FROM detail_transaksi dt INNER JOIN barang b ON dt.id_barang = b.id_barang INNER JOIN transaksi t ON dt.id_transaksi = t.id_transaksi WHERE tanggal_transaksi BETWEEN '$dari_tanggal_baru' AND '$sampai_tanggal_baru'"));
+
+    $jumlah_transaksi = mysqli_num_rows(mysqli_query($koneksi, "SELECT * FROM transaksi WHERE tanggal_transaksi BETWEEN '$dari_tanggal_baru' AND '$sampai_tanggal_baru'"));
+
+    $transaksi = mysqli_query($koneksi, "SELECT * FROM transaksi INNER JOIN user ON transaksi.id_user = user.id_user WHERE tanggal_transaksi BETWEEN '$dari_tanggal_baru' AND '$sampai_tanggal_baru' ORDER BY tanggal_transaksi DESC");
+
+    $barang_paling_laku = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT barang.id_barang, barang.nama_barang, SUM(kuantitas) as laku FROM detail_transaksi dt INNER JOIN barang ON dt.id_barang = barang.id_barang INNER JOIN transaksi t ON dt.id_transaksi = t.id_transaksi WHERE tanggal_transaksi BETWEEN '$dari_tanggal_baru' AND '$sampai_tanggal_baru' GROUP BY dt.id_barang ORDER BY laku DESC LIMIT 1"));
+
+}
+
+
+
 ?>
 
 <!DOCTYPE html>
@@ -60,6 +81,28 @@ $transaksi = mysqli_query($koneksi, "SELECT * FROM transaksi INNER JOIN user ON 
                     </div>
 
                     <!-- Content Row -->
+
+                    <form method="get">
+                        <div class="row">
+                            <div class="col">
+                                <div class="form-group">
+                                    <label for="dari_tanggal">Dari Tanggal</label>
+                                    <input class="form-control" type="date" name="dari_tanggal" value="<?= isset($_GET['btnFilter']) ? $dari_tanggal : date('Y-m-01'); ?>">
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-group">
+                                    <label for="sampai_tanggal">Sampai Tanggal</label>
+                                    <input class="form-control" type="date" name="sampai_tanggal" value="<?= isset($_GET['btnFilter']) ? $sampai_tanggal : date('Y-m-d'); ?>">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" name="btnFilter" class="btn btn-primary"><i class="fas fa-fw fa-filter"></i> Filter</button>
+                            <a href="<?= BASE_URL; ?>index.php" class="btn btn-primary"><i class="fas fa-fw fa-redo"></i> Reset</a>
+                        </div>
+                    </form>    
+                    <hr>
                     <div class="row">
 
                         <!-- Earnings (Monthly) Card Example -->
@@ -69,7 +112,7 @@ $transaksi = mysqli_query($koneksi, "SELECT * FROM transaksi INNER JOIN user ON 
                                     <div class="row no-gutters align-items-center">
                                         <div class="col mr-2">
                                             <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                                Omset</div>
+                                                Omset <?= isset($_GET['btnFilter']) ? "(Filter)" : "(Semua)"; ?></div>
                                             <div class="h5 mb-0 font-weight-bold text-gray-800">Rp. <?= str_replace(",", ".", number_format($omset['omset'])); ?></div>
                                         </div>
                                     </div>
@@ -84,7 +127,7 @@ $transaksi = mysqli_query($koneksi, "SELECT * FROM transaksi INNER JOIN user ON 
                                     <div class="row no-gutters align-items-center">
                                         <div class="col mr-2">
                                             <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                                Laba</div>
+                                                Laba <?= isset($_GET['btnFilter']) ? "(Filter)" : "(Semua)"; ?></div>
                                             <div class="h5 mb-0 font-weight-bold text-gray-800">Rp. <?= str_replace(",", ".", number_format($laba['laba'])); ?></div>
                                         </div>
                                     </div>
@@ -98,7 +141,7 @@ $transaksi = mysqli_query($koneksi, "SELECT * FROM transaksi INNER JOIN user ON 
                                     <div class="row no-gutters align-items-center">
                                         <div class="col mr-2">
                                             <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                                Jumlah Transaksi</div>
+                                                Jumlah Transaksi <?= isset($_GET['btnFilter']) ? "(Filter)" : "(Semua)"; ?></div>
                                             <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $jumlah_transaksi; ?></div>
                                         </div>
                                     </div>
@@ -112,7 +155,7 @@ $transaksi = mysqli_query($koneksi, "SELECT * FROM transaksi INNER JOIN user ON 
                                     <div class="row no-gutters align-items-center">
                                         <div class="col mr-2">
                                             <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
-                                                Barang Paling Laku</div>
+                                                Barang Paling Laku <?= isset($_GET['btnFilter']) ? "(Filter)" : "(Semua)"; ?></div>
                                             <div class="h6 mb-0 font-weight-bold text-gray-800">
                                                 <?php if ($barang_paling_laku): ?>
                                                     <?= $barang_paling_laku['nama_barang']; ?> (<?= $barang_paling_laku['laku']; ?>)
@@ -126,7 +169,7 @@ $transaksi = mysqli_query($koneksi, "SELECT * FROM transaksi INNER JOIN user ON 
                             </div>
                         </div>
                     </div>
-
+                    <hr>
                     <div class="row">
                         <div class="col">
                             <div class="row my-3">
@@ -164,11 +207,11 @@ $transaksi = mysqli_query($koneksi, "SELECT * FROM transaksi INNER JOIN user ON 
                                                 <td><?= $dt['username']; ?></td>
                                                 <td>
                                                     <?php if ($dt['bayar'] == 0): ?>
-                                                        <a class="btn btn-sm btn-info m-1" href="detail_transaksi.php?id_transaksi=<?= $dt['id_transaksi']; ?>"><i class="fas fa-fw fa-exclamation"></i> Bayar</a>
+                                                        <a class="btn btn-sm btn-info m-1" href="<?= BASE_URL; ?>transaksi/detail_transaksi.php?id_transaksi=<?= $dt['id_transaksi']; ?>"><i class="fas fa-fw fa-exclamation"></i> Bayar</a>
                                                     <?php else: ?>
-                                                        <a class="btn btn-sm btn-info m-1" href="detail_transaksi.php?id_transaksi=<?= $dt['id_transaksi']; ?>"><i class="fas fa-fw fa-info"></i> Detail</a>
+                                                        <a class="btn btn-sm btn-info m-1" href="<?= BASE_URL; ?>transaksi/detail_transaksi.php?id_transaksi=<?= $dt['id_transaksi']; ?>"><i class="fas fa-fw fa-info"></i> Detail</a>
                                                     <?php endif ?>
-                                                    <a class="btn btn-sm btn-success m-1" href="ubah_transaksi.php?id_transaksi=<?= $dt['id_transaksi']; ?>"><i class="fas fa-fw fa-edit"></i> Ubah</a>
+                                                    <a class="btn btn-sm btn-success m-1" href="<?= BASE_URL; ?>transaksi/ubah_transaksi.php?id_transaksi=<?= $dt['id_transaksi']; ?>"><i class="fas fa-fw fa-edit"></i> Ubah</a>
                                                     <a class="btn btn-sm btn-danger m-1 btn-delete" data-nama="Transaksi dengan ID Transaksi <?= $dt['id_transaksi']; ?> akan terhapus!" href="hapus_transaksi.php?id_transaksi=<?= $dt['id_transaksi']; ?>"><i class="fas fa-fw fa-trash"></i> Hapus</a>
                                                 </td>
                                             </tr>
