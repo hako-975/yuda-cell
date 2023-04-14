@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 12 Apr 2023 pada 05.53
+-- Waktu pembuatan: 14 Apr 2023 pada 20.26
 -- Versi server: 10.4.27-MariaDB
 -- Versi PHP: 8.2.0
 
@@ -36,6 +36,14 @@ CREATE TABLE `barang` (
   `id_jenis_barang` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data untuk tabel `barang`
+--
+
+INSERT INTO `barang` (`id_barang`, `nama_barang`, `harga_beli`, `harga_jual`, `stok_barang`, `id_jenis_barang`) VALUES
+(1, 'Kuota Tri 3 GB / 3 Hari', 9000, 11000, 3, 1),
+(2, 'Headset', 10000, 13000, 4, 3);
+
 -- --------------------------------------------------------
 
 --
@@ -50,6 +58,15 @@ CREATE TABLE `detail_transaksi` (
   `subtotal` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data untuk tabel `detail_transaksi`
+--
+
+INSERT INTO `detail_transaksi` (`id_detail_transaksi`, `id_transaksi`, `id_barang`, `kuantitas`, `subtotal`) VALUES
+(1, 1, 1, 5, 55000),
+(2, 2, 1, 2, 22000),
+(3, 3, 2, 1, 13000);
+
 -- --------------------------------------------------------
 
 --
@@ -60,6 +77,15 @@ CREATE TABLE `jenis_barang` (
   `id_jenis_barang` int(11) NOT NULL,
   `jenis_barang` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data untuk tabel `jenis_barang`
+--
+
+INSERT INTO `jenis_barang` (`id_jenis_barang`, `jenis_barang`) VALUES
+(1, 'Voucher Kuota'),
+(2, 'Voucher Pulsa'),
+(3, 'Aksesoris');
 
 -- --------------------------------------------------------
 
@@ -75,6 +101,14 @@ CREATE TABLE `pemasukan_barang` (
   `jumlah_pemasukan` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data untuk tabel `pemasukan_barang`
+--
+
+INSERT INTO `pemasukan_barang` (`id_pemasukan_barang`, `id_barang`, `id_supplier`, `tanggal_pemasukan`, `jumlah_pemasukan`) VALUES
+(1, 1, 1, '2023-04-12 11:09:28', 10),
+(2, 2, 1, '2023-04-12 11:37:40', 5);
+
 -- --------------------------------------------------------
 
 --
@@ -87,6 +121,13 @@ CREATE TABLE `supplier` (
   `alamat_supplier` text NOT NULL,
   `no_telp_supplier` varchar(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data untuk tabel `supplier`
+--
+
+INSERT INTO `supplier` (`id_supplier`, `nama_supplier`, `alamat_supplier`, `no_telp_supplier`) VALUES
+(1, 'Sinar Mentari', 'Ciputat', '0');
 
 -- --------------------------------------------------------
 
@@ -102,6 +143,15 @@ CREATE TABLE `transaksi` (
   `kembalian` int(11) DEFAULT NULL,
   `id_user` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data untuk tabel `transaksi`
+--
+
+INSERT INTO `transaksi` (`id_transaksi`, `tanggal_transaksi`, `total_harga`, `bayar`, `kembalian`, `id_user`) VALUES
+(1, '2023-04-12 11:09:34', 55000, 55000, 0, 1),
+(2, '2023-04-12 11:20:58', 22000, 25000, 3000, 1),
+(3, '2023-04-12 11:37:44', 13000, 15000, 2000, 1);
 
 -- --------------------------------------------------------
 
@@ -186,37 +236,37 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT untuk tabel `barang`
 --
 ALTER TABLE `barang`
-  MODIFY `id_barang` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_barang` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT untuk tabel `detail_transaksi`
 --
 ALTER TABLE `detail_transaksi`
-  MODIFY `id_detail_transaksi` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_detail_transaksi` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT untuk tabel `jenis_barang`
 --
 ALTER TABLE `jenis_barang`
-  MODIFY `id_jenis_barang` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_jenis_barang` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT untuk tabel `pemasukan_barang`
 --
 ALTER TABLE `pemasukan_barang`
-  MODIFY `id_pemasukan_barang` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_pemasukan_barang` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT untuk tabel `supplier`
 --
 ALTER TABLE `supplier`
-  MODIFY `id_supplier` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_supplier` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT untuk tabel `transaksi`
 --
 ALTER TABLE `transaksi`
-  MODIFY `id_transaksi` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_transaksi` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT untuk tabel `user`
