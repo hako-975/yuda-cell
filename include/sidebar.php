@@ -16,34 +16,41 @@
             <span>Dashboard</span></a>
     </li>
 
-    <!-- Divider -->
-    <hr class="sidebar-divider">
-
-    <!-- Heading -->
-    <div class="sidebar-heading">
-        Kelola Barang
-    </div>
-
-    <!-- Nav Item - Pages Collapse Menu -->
+    <hr class="sidebar-divider my-0">
+    
     <li class="nav-item">
         <a class="nav-link" href="<?= BASE_URL; ?>transaksi/index.php">
             <i class="fas fa-fw fa-box"></i>
             <span>Transaksi</span></a>
     </li>
+
+    <!-- Divider -->
+    <hr class="sidebar-divider">
+
+    <!-- Heading -->
+    <div class="sidebar-heading">
+        Kelola Produk
+    </div>
+
+    <!-- Nav Item - Pages Collapse Menu -->
     
     <li class="nav-item">
-        <a class="nav-link" href="<?= BASE_URL; ?>pemasukan_barang/index.php">
+        <a class="nav-link" href="<?= BASE_URL; ?>pemasukan_produk/index.php">
             <i class="fas fa-fw fa-box"></i>
-            <span>Pemasukan Barang</span></a>
+            <span>Pemasukan Produk</span></a>
     </li>
 
     <li class="nav-item">
-        <a class="nav-link" href="<?= BASE_URL; ?>barang/index.php">
+        <a class="nav-link" href="<?= BASE_URL; ?>produk/index.php">
             <i class="fas fa-fw fa-box"></i>
-            <span>Barang</span></a>
+            <span>Produk</span></a>
     </li>
 
-    
+    <li class="nav-item">
+        <a class="nav-link" href="<?= BASE_URL; ?>saldo/index.php">
+            <i class="fas fa-fw fa-box"></i>
+            <span>Saldo</span></a>
+    </li>
 
     <!-- Divider -->
     <hr class="sidebar-divider my-0">
@@ -57,7 +64,7 @@
         </a>
         <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item" href="<?= BASE_URL; ?>jenis_barang/index.php">Jenis Barang</a>
+                <a class="collapse-item" href="<?= BASE_URL; ?>jenis_produk/index.php">Jenis Produk</a>
                 <a class="collapse-item" href="<?= BASE_URL; ?>supplier/index.php">Supplier</a>
                 <a class="collapse-item" href="<?= BASE_URL; ?>user/index.php">User</a>
             </div>

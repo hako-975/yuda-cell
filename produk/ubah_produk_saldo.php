@@ -16,36 +16,25 @@ if ($_SESSION['hak_akses'] != 'administrator') {
 	exit;
 }
 
-$id_barang = htmlspecialchars($_GET['id_barang']);
-$data_barang = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM barang INNER JOIN jenis_barang ON barang.id_jenis_barang = jenis_barang.id_jenis_barang WHERE id_barang = '$id_barang'"));
+$id_produk = htmlspecialchars($_GET['id_produk']);
+$data_produk_saldo = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM produk INNER JOIN saldo ON produk.id_saldo = saldo.id_saldo WHERE produk.id_produk = '$id_produk'"));
 
-$jenis_barang = mysqli_query($koneksi, "SELECT * FROM jenis_barang ORDER BY jenis_barang ASC");
+$saldo = mysqli_query($koneksi, "SELECT * FROM saldo ORDER BY nama_saldo ASC");
 
-if (isset($_POST['btnUbahBarang'])) {
-	$nama_barang = htmlspecialchars(ucwords($_POST['nama_barang']));
+if (isset($_POST['btnUbahProdukSaldo'])) {
+	$nama_produk = htmlspecialchars(ucwords($_POST['nama_produk']));
 	$harga_beli = htmlspecialchars($_POST['harga_beli']);
 	$harga_jual = htmlspecialchars($_POST['harga_jual']);
-	$stok_barang = htmlspecialchars($_POST['stok_barang']);
-	$id_jenis_barang = htmlspecialchars($_POST['id_jenis_barang']);
+	$id_saldo = htmlspecialchars($_POST['id_saldo']);
 
-	if ($id_jenis_barang == 0) {
-		setAlert("Gagal!", "Pilih Jenis Barang terlebih dahulu!", "error");
-		echo "
-			<script>
-				window.history.back();
-			</script>
-		";
-		exit;
-	}
+	$ubah_produk_saldo = mysqli_query($koneksi, "UPDATE produk SET nama_produk = '$nama_produk', harga_beli = '$harga_beli', harga_jual = '$harga_jual', id_saldo = '$id_saldo' WHERE id_produk = '$id_produk'");
 
-	$ubah_barang = mysqli_query($koneksi, "UPDATE barang SET nama_barang = '$nama_barang', harga_beli = '$harga_beli', harga_jual = '$harga_jual', stok_barang = '$stok_barang', id_jenis_barang = '$id_jenis_barang' WHERE id_barang = '$id_barang'");
-
-	if ($ubah_barang) {
-		setAlert("Berhasil!", "Barang berhasil diubah!", "success");
-		header("Location:" . BASE_URL . "barang/index.php");
+	if ($ubah_produk_saldo) {
+		setAlert("Berhasil!", "Produk berhasil diubah!", "success");
+		header("Location:" . BASE_URL . "produk/index.php?saldo");
 		exit;
 	} else {
-		setAlert("Gagal!", "Barang gagal diubah!", "error");
+		setAlert("Gagal!", "Produk gagal diubah!", "error");
 		echo "
 			<script>
 				window.history.back();
@@ -65,7 +54,7 @@ $data_profile = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM user WH
 <html lang="en">
 
 <head>
-	<title>Ubah Barang - <?= $data_barang['nama_barang']; ?></title>
+	<title>Ubah Produk - <?= $data_produk_saldo['nama_produk']; ?></title>
     <?php include_once '../include/head.php'; ?>
 
 </head>
@@ -95,44 +84,40 @@ $data_profile = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM user WH
                 		<div class="card-header py-3">
                             <div class="row">
                                 <div class="col head-left">
-                                    <h5 class="my-auto font-weight-bold text-primary">Ubah Barang - <?= $data_barang['nama_barang']; ?></h5>
+                                    <h5 class="my-auto font-weight-bold text-primary">Ubah Produk - <?= $data_produk_saldo['nama_produk']; ?></h5>
                                 </div>
                                 <div class="col head-right">
-                                    <a href="<?= BASE_URL; ?>barang/index.php" class="btn btn-sm btn-primary"><i class="fas fa-fw fa-arrow-left"></i> Kembali</a>
+                                    <a href="<?= BASE_URL; ?>produk/index.php?saldo" class="btn btn-sm btn-primary"><i class="fas fa-fw fa-arrow-left"></i> Kembali</a>
                                 </div>
                             </div>
                         </div>
                         <div class="card-body">
                         	<form method="post">
 								<div class="form-group">
-									<label for="nama_barang">Nama Barang</label>
-									<input class="form-control" type="text" name="nama_barang" id="nama_barang" value="<?= $data_barang['nama_barang']; ?>" required>
+									<label for="nama_produk">Nama Produk</label>
+									<input class="form-control" type="text" name="nama_produk" id="nama_produk" value="<?= $data_produk_saldo['nama_produk']; ?>" required>
 								</div>
 								<div class="form-group">
 									<label for="harga_beli">Harga Beli</label>
-									<input class="form-control" type="number" name="harga_beli" id="harga_beli" value="<?= $data_barang['harga_beli']; ?>" required>
+									<input class="form-control" type="number" name="harga_beli" id="harga_beli" value="<?= $data_produk_saldo['harga_beli']; ?>" required>
 								</div>
 								<div class="form-group">
 									<label for="harga_jual">Harga Jual</label>
-									<input class="form-control" type="number" name="harga_jual" id="harga_jual" value="<?= $data_barang['harga_jual']; ?>" required>
+									<input class="form-control" type="number" name="harga_jual" id="harga_jual" value="<?= $data_produk_saldo['harga_jual']; ?>" required>
 								</div>
 								<div class="form-group">
-									<label for="stok_barang">Stok Barang</label>
-									<input class="form-control" type="number" name="stok_barang" id="stok_barang" value="<?= $data_barang['stok_barang']; ?>" required>
-								</div>
-								<div class="form-group">
-									<label for="id_jenis_barang">Jenis Barang</label>
-									<select name="id_jenis_barang" id="id_jenis_barang" class="custom-select">
-										<option value="<?= $data_barang['id_jenis_barang']; ?>"><?= $data_barang['jenis_barang']; ?></option>
-										<?php foreach ($jenis_barang as $djb): ?>
-											<?php if ($data_barang['id_jenis_barang'] != $djb['id_jenis_barang']): ?>
-												<option value="<?= $djb['id_jenis_barang']; ?>"><?= $djb['jenis_barang']; ?></option>
+									<label for="id_saldo">Saldo</label>
+									<select name="id_saldo" id="id_saldo" class="custom-select">
+										<option value="<?= $data_produk_saldo['id_saldo']; ?>"><?= $data_produk_saldo['nama_saldo']; ?> (sisa saldo Rp. <?= str_replace(",", ".", number_format($data_produk_saldo['saldo'])); ?>)</option>
+										<?php foreach ($saldo as $dpsa): ?>
+											<?php if ($data_produk_saldo['id_saldo'] != $dpsa['id_saldo']): ?>
+												<option value="<?= $dpsa['id_saldo']; ?>"><?= $dpsa['nama_saldo']; ?> (sisa saldo Rp. <?= str_replace(",", ".", number_format($dpsa['saldo'])); ?>)</option>
 											<?php endif ?>
 										<?php endforeach ?>
 									</select>
 								</div>
 								<div class="form-group text-right">
-									<button type="submit" name="btnUbahBarang" class="btn btn-primary"><i class="fas fa-fw fa-paper-plane"></i> Kirim</button>
+									<button type="submit" name="btnUbahProdukSaldo" class="btn btn-primary"><i class="fas fa-fw fa-paper-plane"></i> Kirim</button>
 								</div>
 							</form>
 						</div>
