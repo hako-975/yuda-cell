@@ -25,8 +25,8 @@ if ($hapus_produk) {
 	setAlert("Berhasil!", "Produk berhasil dihapus!", "success");
 	if ($type == 'stok') {
 		header("Location:" . BASE_URL . "produk/index.php?stok");
-	} elseif ($type == 'saldo') {
-		header("Location:" . BASE_URL . "produk/index.php?saldo");
+	} elseif ($type == 'jenis_saldo') {
+		header("Location:" . BASE_URL . "produk/index.php?jenis_saldo");
 	} else {
 		header("Location:" . BASE_URL . "produk/index.php");
 	}
@@ -35,8 +35,8 @@ if ($hapus_produk) {
 	setAlert("Gagal!", "Produk gagal dihapus!", "error");
 	if ($type == 'stok') {
 		header("Location:" . BASE_URL . "produk/index.php?stok");
-	} elseif ($type == 'saldo') {
-		header("Location:" . BASE_URL . "produk/index.php?saldo");
+	} elseif ($type == 'jenis_saldo') {
+		header("Location:" . BASE_URL . "produk/index.php?jenis_saldo");
 	} else {
 		header("Location:" . BASE_URL . "produk/index.php");
 	}

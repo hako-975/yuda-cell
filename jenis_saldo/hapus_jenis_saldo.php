@@ -20,10 +20,10 @@ if ($_SESSION['hak_akses'] != 'administrator') {
 $id_jenis_saldo = htmlspecialchars($_GET['id_jenis_saldo']);
 
 // check the saldo is used or not
-$cek_produk_jenis_saldo = mysqli_query($koneksi, "SELECT * FROM pemasukan WHERE id_jenis_saldo = '$id_jenis_saldo'");
+$cek_produk_jenis_saldo = mysqli_query($koneksi, "SELECT * FROM produk WHERE id_jenis_saldo = '$id_jenis_saldo'");
 
 if (mysqli_num_rows($cek_produk_jenis_saldo) > 0) {
-	setAlert("Gagal!", "Jenis Saldo gagal dihapus! Karena ada produk menggunakan Jenis Saldo", "error");
+	setAlert("Gagal!", "Jenis Saldo gagal dihapus! Karena ada produk menggunakan Jenis Saldo!", "error");
 	header("Location:" . BASE_URL . "jenis_saldo/index.php");
 	exit;
 }

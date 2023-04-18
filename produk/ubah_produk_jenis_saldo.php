@@ -16,32 +16,25 @@ if ($_SESSION['hak_akses'] != 'administrator') {
 	exit;
 }
 
-$saldo = mysqli_query($koneksi, "SELECT * FROM saldo ORDER BY nama_saldo ASC");
+$id_produk = htmlspecialchars($_GET['id_produk']);
+$data_produk_saldo = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM produk INNER JOIN jenis_saldo ON produk.id_jenis_saldo = jenis_saldo.id_jenis_saldo WHERE produk.id_produk = '$id_produk'"));
 
-if (isset($_POST['btnTambahProdukSaldo'])) {
+$jenis_saldo = mysqli_query($koneksi, "SELECT * FROM jenis_saldo ORDER BY jenis_saldo ASC");
+
+if (isset($_POST['btnUbahProdukJenisSaldo'])) {
 	$nama_produk = htmlspecialchars(ucwords($_POST['nama_produk']));
 	$harga_beli = htmlspecialchars($_POST['harga_beli']);
 	$harga_jual = htmlspecialchars($_POST['harga_jual']);
-	$id_saldo = htmlspecialchars($_POST['id_saldo']);
+	$id_jenis_saldo = htmlspecialchars($_POST['id_jenis_saldo']);
 
-	if ($id_saldo == 0) {
-		setAlert("Gagal!", "Pilih Saldo terlebih dahulu!", "error");
-		echo "
-			<script>
-				window.history.back();
-			</script>
-		";
-		exit;
-	}
+	$ubah_produk_jenis_saldo = mysqli_query($koneksi, "UPDATE produk SET nama_produk = '$nama_produk', harga_beli = '$harga_beli', harga_jual = '$harga_jual', id_jenis_saldo = '$id_jenis_saldo' WHERE id_produk = '$id_produk'");
 
-	$tambah_produk_saldo = mysqli_query($koneksi, "INSERT INTO produk VALUES('', '$nama_produk', '$harga_beli', '$harga_jual', null, '$id_saldo')");
-
-	if ($tambah_produk_saldo) {
-		setAlert("Berhasil!", "Produk ".$nama_produk." berhasil ditambahkan!", "success");
-		header("Location:" . BASE_URL . "produk/index.php?saldo");
+	if ($ubah_produk_jenis_saldo) {
+		setAlert("Berhasil!", "Produk berhasil diubah!", "success");
+		header("Location:" . BASE_URL . "produk/index.php?jenis_saldo");
 		exit;
 	} else {
-		setAlert("Gagal!", "Produk gagal ditambahkan!", "error");
+		setAlert("Gagal!", "Produk gagal diubah!", "error");
 		echo "
 			<script>
 				window.history.back();
@@ -56,11 +49,12 @@ $data_profile = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM user WH
 
 ?>
 
+
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-    <title>Tambah Produk Saldo - Yuda Cell</title>
+	<title>Ubah Produk - <?= $data_produk_saldo['nama_produk']; ?></title>
     <?php include_once '../include/head.php'; ?>
 
 </head>
@@ -90,10 +84,10 @@ $data_profile = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM user WH
                 		<div class="card-header py-3">
                             <div class="row">
                                 <div class="col head-left">
-                                    <h5 class="my-auto font-weight-bold text-primary">Tambah Produk Saldo</h5>
+                                    <h5 class="my-auto font-weight-bold text-primary">Ubah Produk - <?= $data_produk_saldo['nama_produk']; ?></h5>
                                 </div>
                                 <div class="col head-right">
-                                    <a href="<?= BASE_URL; ?>produk/index.php?saldo" class="btn btn-sm btn-primary"><i class="fas fa-fw fa-arrow-left"></i> Kembali</a>
+                                    <a href="<?= BASE_URL; ?>produk/index.php?jenis_saldo" class="btn btn-sm btn-primary"><i class="fas fa-fw fa-arrow-left"></i> Kembali</a>
                                 </div>
                             </div>
                         </div>
@@ -101,27 +95,29 @@ $data_profile = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM user WH
                         	<form method="post">
 								<div class="form-group">
 									<label for="nama_produk">Nama Produk</label>
-									<input class="form-control" type="text" name="nama_produk" id="nama_produk" required>
+									<input class="form-control" type="text" name="nama_produk" id="nama_produk" value="<?= $data_produk_saldo['nama_produk']; ?>" required>
 								</div>
 								<div class="form-group">
 									<label for="harga_beli">Harga Beli</label>
-									<input class="form-control" type="number" name="harga_beli" id="harga_beli" required>
+									<input class="form-control" type="number" name="harga_beli" id="harga_beli" value="<?= $data_produk_saldo['harga_beli']; ?>" required>
 								</div>
 								<div class="form-group">
 									<label for="harga_jual">Harga Jual</label>
-									<input class="form-control" type="number" name="harga_jual" id="harga_jual" required>
+									<input class="form-control" type="number" name="harga_jual" id="harga_jual" value="<?= $data_produk_saldo['harga_jual']; ?>" required>
 								</div>
 								<div class="form-group">
-									<label for="id_saldo">Saldo</label>
-									<select name="id_saldo" id="id_saldo" class="custom-select">
-										<option value="0">--- Pilih Saldo ---</option>
-										<?php foreach ($saldo as $dpsa): ?>
-											<option value="<?= $dpsa['id_saldo']; ?>"><?= $dpsa['nama_saldo']; ?> (sisa saldo Rp. <?= str_replace(",", ".", number_format($dpsa['saldo'])); ?>)</option>
+									<label for="id_jenis_saldo">Jenis Saldo</label>
+									<select name="id_jenis_saldo" id="id_jenis_saldo" class="custom-select">
+										<option value="<?= $data_produk_saldo['id_jenis_saldo']; ?>"><?= $data_produk_saldo['jenis_saldo']; ?> (sisa saldo Rp. <?= str_replace(",", ".", number_format($data_produk_saldo['jumlah_saldo'])); ?>)</option>
+										<?php foreach ($jenis_saldo as $dpsa): ?>
+											<?php if ($data_produk_saldo['id_jenis_saldo'] != $dpsa['id_jenis_saldo']): ?>
+												<option value="<?= $dpsa['id_jenis_saldo']; ?>"><?= $dpsa['jenis_saldo']; ?> (sisa saldo Rp. <?= str_replace(",", ".", number_format($dpsa['jumlah_saldo'])); ?>)</option>
+											<?php endif ?>
 										<?php endforeach ?>
 									</select>
 								</div>
 								<div class="form-group text-right">
-									<button type="submit" name="btnTambahProdukSaldo" class="btn btn-primary"><i class="fas fa-fw fa-paper-plane"></i> Kirim</button>
+									<button type="submit" name="btnUbahProdukJenisSaldo" class="btn btn-primary"><i class="fas fa-fw fa-paper-plane"></i> Kirim</button>
 								</div>
 							</form>
 						</div>

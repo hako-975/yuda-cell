@@ -46,12 +46,6 @@
             <span>Produk</span></a>
     </li>
 
-    <li class="nav-item">
-        <a class="nav-link" href="<?= BASE_URL; ?>jenis_saldo/index.php">
-            <i class="fas fa-fw fa-box"></i>
-            <span>Jenis Saldo</span></a>
-    </li>
-
     <!-- Divider -->
     <hr class="sidebar-divider my-0">
 
@@ -64,7 +58,7 @@
         </a>
         <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item" href="<?= BASE_URL; ?>jenis_produk/index.php">Jenis Produk</a>
+                <a class="collapse-item" href="<?= BASE_URL; ?>jenis_saldo/index.php">Jenis Saldo</a>
                 <a class="collapse-item" href="<?= BASE_URL; ?>supplier/index.php">Supplier</a>
                 <a class="collapse-item" href="<?= BASE_URL; ?>user/index.php">User</a>
             </div>

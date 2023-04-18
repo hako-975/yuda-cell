@@ -8,7 +8,7 @@ if (!isset($_SESSION['id_user'])) {
 
 $produk_stok = mysqli_query($koneksi, "SELECT * FROM produk WHERE produk.stok != '0' ORDER BY nama_produk ASC");
 
-$produk_saldo = mysqli_query($koneksi, "SELECT * FROM produk INNER JOIN saldo ON produk.id_saldo = saldo.id_saldo WHERE produk.id_saldo != '0' ORDER BY nama_produk ASC");
+$produk_jenis_saldo = mysqli_query($koneksi, "SELECT * FROM produk INNER JOIN jenis_saldo ON produk.id_jenis_saldo = jenis_saldo.id_jenis_saldo WHERE produk.id_jenis_saldo != '0' ORDER BY nama_produk ASC");
 
 $id_user = htmlspecialchars($_SESSION['id_user']);
 $data_profile = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM user WHERE id_user = '$id_user'"));
@@ -51,7 +51,7 @@ $data_profile = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM user WH
 						    <button class="nav-link <?= (isset($_GET['stok'])) ? 'active' : ''; ?>" type="submit" name="stok">Stok</button>
 					  	</form>
 					  	<form method="get" class="m-0 p-0">
-						    <button class="nav-link <?= (isset($_GET['saldo'])) ? 'active' : '' ; ?>" type="submit" name="saldo">Saldo</button>
+						    <button class="nav-link <?= (isset($_GET['jenis_saldo'])) ? 'active' : '' ; ?>" type="submit" name="jenis_saldo">Jenis Saldo</button>
 					  	</form>
 					  </div>
 					</nav>
@@ -106,15 +106,15 @@ $data_profile = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM user WH
 	                        </div>
 	                    </div>
 					  </div>
-					  <div class="tab-pane fade show <?= (isset($_GET['saldo'])) ? 'active' : '' ; ?>" id="nav-saldo" role="tabpanel" aria-labelledby="nav-saldo-tab">
+					  <div class="tab-pane fade show <?= (isset($_GET['jenis_saldo'])) ? 'active' : '' ; ?>" id="nav-saldo" role="tabpanel" aria-labelledby="nav-saldo-tab">
 					  	<div class="card shadow mb-4">
 	                        <div class="card-header py-3">
 	                            <div class="row">
 	                                <div class="col head-left">
-	                                    <h5 class="my-auto font-weight-bold text-primary">Produk Saldo</h5>
+	                                    <h5 class="my-auto font-weight-bold text-primary">Produk Jenis Saldo</h5>
 	                                </div>
 	                                <div class="col head-right">
-	                                    <a href="<?= BASE_URL; ?>produk/tambah_produk_saldo.php" class="btn btn-sm btn-primary"><i class="fas fa-fw fa-plus"></i> Tambah Produk Saldo</a>
+	                                    <a href="<?= BASE_URL; ?>produk/tambah_produk_jenis_saldo.php" class="btn btn-sm btn-primary"><i class="fas fa-fw fa-plus"></i> Tambah Produk Jenis Saldo</a>
 	                                </div>
 	                            </div>
 	                        </div>
@@ -127,7 +127,7 @@ $data_profile = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM user WH
 												<th>Nama Produk</th>
 												<th>Harga Beli</th>
 												<th>Harga Jual</th>
-												<th>Saldo</th>
+												<th>Jenis Saldo</th>
 												<?php if ($data_profile['hak_akses'] == 'administrator'): ?>
 													<th>Aksi</th>
 												<?php endif ?>
@@ -135,17 +135,17 @@ $data_profile = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM user WH
 										</thead>
 										<tbody>
 											<?php $i = 1; ?>
-											<?php foreach ($produk_saldo as $dpsa): ?>
+											<?php foreach ($produk_jenis_saldo as $dpjs): ?>
 												<tr>
 													<td><?= $i++; ?></td>
-													<td><?= $dpsa['nama_produk']; ?></td>
-													<td>Rp. <?= str_replace(",", ".", number_format($dpsa['harga_beli'])); ?></td>
-													<td>Rp. <?= str_replace(",", ".", number_format($dpsa['harga_jual'])); ?></td>
-													<td><?= $dpsa['nama_saldo']; ?> (sisa saldo Rp. <?= str_replace(",", ".", number_format($dpsa['saldo'])); ?>)</td>
+													<td><?= $dpjs['nama_produk']; ?></td>
+													<td>Rp. <?= str_replace(",", ".", number_format($dpjs['harga_beli'])); ?></td>
+													<td>Rp. <?= str_replace(",", ".", number_format($dpjs['harga_jual'])); ?></td>
+													<td><?= $dpjs['jenis_saldo']; ?> (sisa saldo Rp. <?= str_replace(",", ".", number_format($dpjs['jumlah_saldo'])); ?>)</td>
 													<?php if ($data_profile['hak_akses'] == 'administrator'): ?>
 														<td>
-															<a class="btn btn-sm btn-success" href="ubah_produk_saldo.php?id_produk=<?= $dpsa['id_produk']; ?>"><i class="fas fa-fw fa-edit"></i> Ubah</a>
-															<a class="btn btn-sm btn-danger btn-delete" data-nama="Produk <?= $dpsa['nama_produk']; ?> akan terhapus!" href="hapus_produk.php?id_produk=<?= $dpsa['id_produk']; ?>&type=saldo"><i class="fas fa-fw fa-trash"></i> Hapus</a>
+															<a class="btn btn-sm btn-success" href="ubah_produk_jenis_saldo.php?id_produk=<?= $dpjs['id_produk']; ?>"><i class="fas fa-fw fa-edit"></i> Ubah</a>
+															<a class="btn btn-sm btn-danger btn-delete" data-nama="Produk <?= $dpjs['nama_produk']; ?> akan terhapus!" href="hapus_produk.php?id_produk=<?= $dpjs['id_produk']; ?>&type=jenis_saldo"><i class="fas fa-fw fa-trash"></i> Hapus</a>
 														</td>
 													<?php endif ?>
 												</tr>
@@ -157,7 +157,7 @@ $data_profile = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM user WH
 	                    </div>
 					  </div>
 					</div>
-					<?php if (!isset($_GET['stok']) && !isset($_GET['saldo'])): ?>
+					<?php if (!isset($_GET['stok']) && !isset($_GET['jenis_saldo'])): ?>
 						<h1 class="d-block mx-auto text-center mt-5 pt-5">Pilih tab menu di atas!</h1>
 					<?php endif ?>
 				</div>
