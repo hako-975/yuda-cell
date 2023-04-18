@@ -16,17 +16,22 @@ if ($_SESSION['hak_akses'] != 'administrator') {
 	exit;
 }
 
-if (isset($_POST['btnTambahJenisBarang'])) {
-	$jenis_barang = htmlspecialchars(ucwords($_POST['jenis_barang']));
+$id_jenis_saldo = htmlspecialchars($_GET['id_jenis_saldo']);
+$data_jenis_saldo = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM jenis_saldo WHERE id_jenis_saldo = '$id_jenis_saldo'"));
 
-	$tambah_jenis_barang = mysqli_query($koneksi, "INSERT INTO jenis_barang VALUES('', '$jenis_barang')");
+if (isset($_POST['btnUbahJenisSaldo'])) {
+	$jenis_saldo = htmlspecialchars($_POST['jenis_saldo']);
+	$jumlah_saldo = htmlspecialchars($_POST['jumlah_saldo']);
 
-	if ($tambah_jenis_barang) {
-		setAlert("Berhasil!", "Jenis Barang ".$jenis_barang." berhasil ditambahkan!", "success");
-		header("Location:" . BASE_URL . "jenis_barang/index.php");
+
+	$ubah_jenis_saldo = mysqli_query($koneksi, "UPDATE jenis_saldo SET jenis_saldo = '$jenis_saldo', jumlah_saldo = '$jumlah_saldo' WHERE id_jenis_saldo = '$id_jenis_saldo'");
+
+	if ($ubah_jenis_saldo) {
+		setAlert("Berhasil!", "Jenis Saldo berhasil diubah!", "success");
+		header("Location:" . BASE_URL . "jenis_saldo/index.php");
 		exit;
 	} else {
-		setAlert("Gagal!", "Jenis Barang gagal ditambahkan!", "error");
+		setAlert("Gagal!", "Jenis Saldo gagal diubah!", "error");
 		echo "
 			<script>
 				window.history.back();
@@ -36,15 +41,17 @@ if (isset($_POST['btnTambahJenisBarang'])) {
 	}
 }
 
+
 $id_user = htmlspecialchars($_SESSION['id_user']);
 $data_profile = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM user WHERE id_user = '$id_user'"));
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-    <title>Tambah Jenis Barang - Yuda Cell</title>
+	<title>Ubah Jenis Saldo - <?= $data_jenis_saldo['jenis_saldo']; ?></title>
     <?php include_once '../include/head.php'; ?>
 
 </head>
@@ -74,24 +81,28 @@ $data_profile = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM user WH
                 		<div class="card-header py-3">
                             <div class="row">
                                 <div class="col head-left">
-                                    <h5 class="my-auto font-weight-bold text-primary">Tambah Jenis Barang</h5>
+                                    <h5 class="my-auto font-weight-bold text-primary">Ubah Jenis Saldo - <?= $data_jenis_saldo['jenis_saldo']; ?></h5>
                                 </div>
                                 <div class="col head-right">
-                                    <a href="<?= BASE_URL; ?>jenis_barang/index.php" class="btn btn-sm btn-primary"><i class="fas fa-fw fa-arrow-left"></i> Kembali</a>
+                                    <a href="<?= BASE_URL; ?>jenis_saldo/index.php" class="btn btn-sm btn-primary"><i class="fas fa-fw fa-arrow-left"></i> Kembali</a>
                                 </div>
                             </div>
                         </div>
                         <div class="card-body">
                         	<form method="post">
 								<div class="form-group">
-									<label for="jenis_barang">Jenis Barang</label>
-									<input class="form-control" type="text" name="jenis_barang" id="jenis_barang" required>
+									<label for="jenis_saldo">Jenis Saldo</label>
+									<input class="form-control" type="text" name="jenis_saldo" id="jenis_saldo" value="<?= $data_jenis_saldo['jenis_saldo']; ?>" required>
+								</div>
+								<div class="form-group">
+									<label for="jumlah_saldo">Jumlah Saldo</label>
+									<input class="form-control" type="number" name="jumlah_saldo" id="jumlah_saldo" value="<?= $data_jenis_saldo['jumlah_saldo']; ?>" required>
 								</div>
 								<div class="form-group text-right">
-									<button type="submit" name="btnTambahJenisBarang" class="btn btn-primary"><i class="fas fa-fw fa-paper-plane"></i> Kirim</button>
+									<button type="submit" name="btnUbahJenisSaldo" class="btn btn-primary"><i class="fas fa-fw fa-paper-plane"></i> Kirim</button>
 								</div>
 							</form>
-                        </div>
+						</div>
                     </div>
             	</div>
                 <!-- /.container-fluid -->

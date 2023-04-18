@@ -6,7 +6,7 @@ if (!isset($_SESSION['id_user'])) {
 	exit;
 }
 
-$jenis_barang = mysqli_query($koneksi, "SELECT * FROM jenis_barang ORDER BY jenis_barang ASC");
+$jenis_saldo = mysqli_query($koneksi, "SELECT * FROM jenis_saldo ORDER BY jenis_saldo ASC");
 
 $id_user = htmlspecialchars($_SESSION['id_user']);
 $data_profile = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM user WHERE id_user = '$id_user'"));
@@ -17,7 +17,7 @@ $data_profile = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM user WH
 <html lang="en">
 
 <head>
-    <title>Jenis Barang - Yuda Cell</title>
+    <title>Jenis Saldo - Yuda Cell</title>
     <?php include_once '../include/head.php'; ?>
 
 </head>
@@ -48,11 +48,11 @@ $data_profile = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM user WH
                         <div class="card-header py-3">
                             <div class="row">
                                 <div class="col head-left">
-                                    <h5 class="my-auto font-weight-bold text-primary">Jenis Barang</h5>
+                                    <h5 class="my-auto font-weight-bold text-primary">Jenis Saldo</h5>
                                 </div>
                                 <?php if ($data_profile['hak_akses'] == 'administrator'): ?>
                                     <div class="col head-right">
-                                        <a href="<?= BASE_URL; ?>jenis_barang/tambah_jenis_barang.php" class="btn btn-sm btn-primary"><i class="fas fa-fw fa-plus"></i> Tambah Jenis Barang</a>
+                                        <a href="<?= BASE_URL; ?>jenis_saldo/tambah_jenis_saldo.php" class="btn btn-sm btn-primary"><i class="fas fa-fw fa-plus"></i> Tambah Jenis Saldo</a>
                                     </div>
                                 <?php endif ?>
                             </div>
@@ -63,7 +63,8 @@ $data_profile = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM user WH
                                     <thead>
 										<tr>
 											<th>No.</th>
-											<th>Jenis Barang</th>
+                                            <th>Jenis Saldo</th>
+											<th>Jumlah Saldo</th>
 											<?php if ($data_profile['hak_akses'] == 'administrator'): ?>
 												<th>Aksi</th>
 											<?php endif ?>
@@ -71,14 +72,15 @@ $data_profile = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM user WH
 									</thead>
                                     <tbody>
 										<?php $i = 1; ?>
-										<?php foreach ($jenis_barang as $djb): ?>
+										<?php foreach ($jenis_saldo as $djs): ?>
 											<tr>
 												<td><?= $i++; ?></td>
-												<td><?= $djb['jenis_barang']; ?></td>
+                                                <td><?= $djs['jenis_saldo']; ?></td>
+												<td>Rp. <?= str_replace(",", ".", number_format($djs['jumlah_saldo'])); ?></td>
 												<?php if ($data_profile['hak_akses'] == 'administrator'): ?>
 													<td>
-														<a class="btn btn-sm btn-success" href="ubah_jenis_barang.php?id_jenis_barang=<?= $djb['id_jenis_barang']; ?>"><i class="fas fa-fw fa-edit"></i> Ubah</a>
-														<a class="btn btn-sm btn-danger btn-delete" data-nama="Jenis Barang <?= $djb['jenis_barang']; ?> akan terhapus!" href="hapus_jenis_barang.php?id_jenis_barang=<?= $djb['id_jenis_barang']; ?>"><i class="fas fa-fw fa-trash"></i> Hapus</a>
+														<a class="btn btn-sm btn-success" href="ubah_jenis_saldo.php?id_jenis_saldo=<?= $djs['id_jenis_saldo']; ?>"><i class="fas fa-fw fa-edit"></i> Ubah</a>
+														<a class="btn btn-sm btn-danger btn-delete" data-nama="Jenis Saldo <?= $djs['jenis_saldo']; ?> akan terhapus!" href="hapus_jenis_saldo.php?id_jenis_saldo=<?= $djs['id_jenis_saldo']; ?>"><i class="fas fa-fw fa-trash"></i> Hapus</a>
 													</td>
 												<?php endif ?>
 											</tr>

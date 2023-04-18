@@ -47,9 +47,9 @@
     </li>
 
     <li class="nav-item">
-        <a class="nav-link" href="<?= BASE_URL; ?>saldo/index.php">
+        <a class="nav-link" href="<?= BASE_URL; ?>jenis_saldo/index.php">
             <i class="fas fa-fw fa-box"></i>
-            <span>Saldo</span></a>
+            <span>Jenis Saldo</span></a>
     </li>
 
     <!-- Divider -->
