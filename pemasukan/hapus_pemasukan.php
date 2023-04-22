@@ -18,22 +18,35 @@ if ($_SESSION['hak_akses'] != 'administrator') {
 }
 
 $id_pemasukan = htmlspecialchars($_GET['id_pemasukan']);
+$type = htmlspecialchars($_GET['type']);
 
-$get_jumlah_pemasukan_old = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM pemasukan WHERE id_pemasukan = '$id_pemasukan'"));
-$jumlah_pemasukan = $get_jumlah_pemasukan_old['jumlah_pemasukan'];
-$id_barang = $get_jumlah_pemasukan_old['id_barang'];
+// $get_jumlah_old = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM pemasukan WHERE id_pemasukan = '$id_pemasukan'"));
+// $jumlah = $get_jumlah_old['jumlah'];
+// $id_barang = $get_jumlah_old['id_barang'];
 
-$update_stok_barang = mysqli_query($koneksi, "UPDATE barang SET stok_barang = stok_barang - '$jumlah_pemasukan' WHERE id_barang = '$id_barang'");
+// $update_stok_barang = mysqli_query($koneksi, "UPDATE barang SET stok_barang = stok_barang - '$jumlah' WHERE id_barang = '$id_barang'");
 
 $hapus_pemasukan = mysqli_query($koneksi, "DELETE FROM pemasukan WHERE id_pemasukan = '$id_pemasukan'");
 
 if ($hapus_pemasukan) {
 	setAlert("Berhasil!", "Pemasukan Barang berhasil dihapus!", "success");
-	header("Location:" . BASE_URL . "pemasukan/index.php");
+	if ($type == 'stok') {
+		header("Location:" . BASE_URL . "pemasukan/index.php?stok");
+	} elseif ($type == 'jenis_saldo') {
+		header("Location:" . BASE_URL . "pemasukan/index.php?jenis_saldo");
+	} else {
+		header("Location:" . BASE_URL . "pemasukan/index.php");
+	}
 	exit;
 } else {
 	setAlert("Gagal!", "Pemasukan Barang gagal dihapus!", "error");
-	header("Location:" . BASE_URL . "pemasukan/index.php");
+	if ($type == 'stok') {
+		header("Location:" . BASE_URL . "pemasukan/index.php?stok");
+	} elseif ($type == 'jenis_saldo') {
+		header("Location:" . BASE_URL . "pemasukan/index.php?jenis_saldo");
+	} else {
+		header("Location:" . BASE_URL . "pemasukan/index.php");
+	}
 	exit;
 }
 
