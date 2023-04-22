@@ -35,9 +35,9 @@
     <!-- Nav Item - Pages Collapse Menu -->
     
     <li class="nav-item">
-        <a class="nav-link" href="<?= BASE_URL; ?>pemasukan_produk/index.php">
+        <a class="nav-link" href="<?= BASE_URL; ?>pemasukan/index.php">
             <i class="fas fa-fw fa-box"></i>
-            <span>Pemasukan Produk</span></a>
+            <span>Pemasukan</span></a>
     </li>
 
     <li class="nav-item">

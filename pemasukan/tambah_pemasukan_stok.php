@@ -2,7 +2,7 @@
 require_once '../koneksi.php';
 
 if (!isset($_SESSION['id_user'])) {
-	header("Location: login.php");
+	header("Location: ".BASE_URL."login.php");
 	exit;
 }
 
@@ -16,17 +16,17 @@ if ($_SESSION['hak_akses'] != 'administrator') {
 	exit;
 }
 
-$barang = mysqli_query($koneksi, "SELECT * FROM barang ORDER BY nama_barang ASC");
+$produk = mysqli_query($koneksi, "SELECT * FROM produk ORDER BY nama_produk ASC");
 $supplier = mysqli_query($koneksi, "SELECT * FROM supplier ORDER BY nama_supplier ASC");
 
-if (isset($_POST['btnTambahPemasukanBarang'])) {
-	$id_barang = htmlspecialchars($_POST['id_barang']);
+if (isset($_POST['btnTambahPemasukanStok'])) {
+	$id_produk = htmlspecialchars($_POST['id_produk']);
 	$id_supplier = htmlspecialchars($_POST['id_supplier']);
-	$tanggal_pemasukan = date("Y-m-d H:i:s");
-	$jumlah_pemasukan = htmlspecialchars($_POST['jumlah_pemasukan']);
+	$tanggal_pemasukan = htmlspecialchars($_POST['tanggal_pemasukan']);
+	$jumlah = htmlspecialchars($_POST['jumlah']);
 
-	if ($id_barang == 0) {
-		setAlert("Gagal!", "Pilih Barang terlebih dahulu!", "error");
+	if ($id_produk == 0) {
+		setAlert("Gagal!", "Pilih Produk terlebih dahulu!", "error");
 		echo "
 			<script>
 				window.history.back();
@@ -45,14 +45,16 @@ if (isset($_POST['btnTambahPemasukanBarang'])) {
 		exit;
 	}
 
-	$tambah_pemasukan_barang = mysqli_query($koneksi, "INSERT INTO pemasukan_barang VALUES('', '$id_barang', '$id_supplier', '$tanggal_pemasukan', '$jumlah_pemasukan')");
-	$update_stok_barang = mysqli_query($koneksi, "UPDATE barang SET stok_barang = stok_barang + '$jumlah_pemasukan' WHERE id_barang = '$id_barang'");
-	if ($tambah_pemasukan_barang) {
-		setAlert("Berhasil!", "Pemasukan Barang ".$nama_barang." berhasil ditambahkan!", "success");
-		header("Location:" . BASE_URL . "pemasukan_barang/index.php");
+	$tambah_pemasukan_stok = mysqli_query($koneksi, "INSERT INTO pemasukan VALUES('', '$id_produk', null, '$id_supplier', '$tanggal_pemasukan', '$jumlah')");
+	
+	// $update_stok_barang = mysqli_query($koneksi, "UPDATE barang SET stok_barang = stok_barang + '$jumlah' WHERE id_produk = '$id_produk'");
+	
+	if ($tambah_pemasukan_stok) {
+		setAlert("Berhasil!", "Pemasukan Stok ".$nama_produk." berhasil ditambahkan!", "success");
+		header("Location:" . BASE_URL . "pemasukan/index.php?stok");
 		exit;
 	} else {
-		setAlert("Gagal!", "Pemasukan Barang gagal ditambahkan!", "error");
+		setAlert("Gagal!", "Pemasukan Stok gagal ditambahkan!", "error");
 		echo "
 			<script>
 				window.history.back();
@@ -65,13 +67,14 @@ if (isset($_POST['btnTambahPemasukanBarang'])) {
 
 $id_user = htmlspecialchars($_SESSION['id_user']);
 $data_profile = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM user WHERE id_user = '$id_user'"));
+
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-    <title>Tambah Pemasukan Barang - Yuda Cell</title>
+    <title>Tambah Pemasukan Stok - Yuda Cell</title>
     <?php include_once '../include/head.php'; ?>
 
 </head>
@@ -101,21 +104,21 @@ $data_profile = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM user WH
                 		<div class="card-header py-3">
                             <div class="row">
                                 <div class="col head-left">
-                                    <h5 class="my-auto font-weight-bold text-primary">Tambah Pemasukan Barang</h5>
+                                    <h5 class="my-auto font-weight-bold text-primary">Tambah Pemasukan Stok</h5>
                                 </div>
                                 <div class="col head-right">
-                                    <a href="<?= BASE_URL; ?>pemasukan_barang/index.php" class="btn btn-sm btn-primary"><i class="fas fa-fw fa-arrow-left"></i> Kembali</a>
+                                    <a href="<?= BASE_URL; ?>pemasukan/index.php?stok" class="btn btn-sm btn-primary"><i class="fas fa-fw fa-arrow-left"></i> Kembali</a>
                                 </div>
                             </div>
                         </div>
                         <div class="card-body">
                         	<form method="post">
 								<div class="form-group">
-									<label for="id_barang">Nama Barang</label>
-									<select name="id_barang" id="id_barang" class="custom-select">
-										<option value="0">--- Pilih Nama Barang ---</option>
-										<?php foreach ($barang as $db): ?>
-											<option value="<?= $db['id_barang']; ?>"><?= $db['nama_barang']; ?></option>
+									<label for="id_produk">Nama Produk</label>
+									<select name="id_produk" id="id_produk" class="custom-select">
+										<option value="0">--- Pilih Nama Produk ---</option>
+										<?php foreach ($produk as $dp): ?>
+											<option value="<?= $dp['id_produk']; ?>"><?= $dp['nama_produk']; ?></option>
 										<?php endforeach ?>
 									</select>
 								</div>
@@ -129,11 +132,15 @@ $data_profile = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM user WH
 									</select>
 								</div>
 								<div class="form-group">
-									<label for="jumlah_pemasukan">Jumlah Pemasukan Barang</label>
-									<input class="form-control" type="number" name="jumlah_pemasukan" id="jumlah_pemasukan" required>
+									<label for="jumlah">Jumlah Pemasukan Stok</label>
+									<input class="form-control" type="number" name="jumlah" id="jumlah" required>
+								</div>
+								<div class="form-group">
+									<label for="tanggal_pemasukan">Tanggal Pemasukan Stok</label>
+									<input type="datetime-local" id="tanggal_pemasukan" class="form-control" name="tanggal_pemasukan" required value="<?= date('Y-m-d H:i'); ?>">
 								</div>
 								<div class="form-group text-right">
-									<button type="submit" name="btnTambahPemasukanBarang" class="btn btn-primary"><i class="fas fa-fw fa-paper-plane"></i> Kirim</button>
+									<button type="submit" name="btnTambahPemasukanStok" class="btn btn-primary"><i class="fas fa-fw fa-paper-plane"></i> Kirim</button>
 								</div>
 							</form>
 						</div>
