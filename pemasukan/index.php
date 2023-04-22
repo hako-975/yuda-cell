@@ -142,12 +142,12 @@ $data_profile = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM user WH
                                                     <td><?= $i++; ?></td>
                                                     <td><?= $dpjs['jenis_saldo']; ?></td>
                                                     <td><?= $dpjs['nama_supplier']; ?></td>
-                                                    <td><?= date("d-m-Y, H:i", $dpjs['tanggal_pemasukan']); ?></td>
-                                                    <td><?= $dpjs['jumlah']; ?></td>
+                                                    <td><?= date("d-m-Y, H:i", strtotime($dpjs['tanggal_pemasukan'])); ?></td>
+                                                    <td>Rp. <?= str_replace(",", ".", number_format($dpjs['jumlah'])); ?></td>
                                                     <?php if ($data_profile['hak_akses'] == 'administrator'): ?>
                                                         <td>
                                                             <a class="btn btn-sm btn-success" href="ubah_pemasukan_jenis_saldo.php?id_pemasukan=<?= $dpjs['id_pemasukan']; ?>"><i class="fas fa-fw fa-edit"></i> Ubah</a>
-                                                            <a class="btn btn-sm btn-danger btn-delete" data-nama="pemasukan <?= $dpjs['nama_pemasukan']; ?> akan terhapus!" href="hapus_pemasukan.php?id_pemasukan=<?= $dpjs['id_pemasukan']; ?>&type=jenis_saldo"><i class="fas fa-fw fa-trash"></i> Hapus</a>
+                                                            <a class="btn btn-sm btn-danger btn-delete" data-nama="pemasukan <?= $dpjs['jenis_saldo']; ?> akan terhapus!" href="hapus_pemasukan.php?id_pemasukan=<?= $dpjs['id_pemasukan']; ?>&type=jenis_saldo"><i class="fas fa-fw fa-trash"></i> Hapus</a>
                                                         </td>
                                                     <?php endif ?>
                                                 </tr>

@@ -23,23 +23,11 @@ $hapus_produk = mysqli_query($koneksi, "DELETE FROM produk WHERE id_produk = '$i
 
 if ($hapus_produk) {
 	setAlert("Berhasil!", "Produk berhasil dihapus!", "success");
-	if ($type == 'stok') {
-		header("Location:" . BASE_URL . "produk/index.php?stok");
-	} elseif ($type == 'jenis_saldo') {
-		header("Location:" . BASE_URL . "produk/index.php?jenis_saldo");
-	} else {
-		header("Location:" . BASE_URL . "produk/index.php");
-	}
+	header("Location:" . BASE_URL . "produk/index.php?".$type);
 	exit;
 } else {
 	setAlert("Gagal!", "Produk gagal dihapus!", "error");
-	if ($type == 'stok') {
-		header("Location:" . BASE_URL . "produk/index.php?stok");
-	} elseif ($type == 'jenis_saldo') {
-		header("Location:" . BASE_URL . "produk/index.php?jenis_saldo");
-	} else {
-		header("Location:" . BASE_URL . "produk/index.php");
-	}
+	header("Location:" . BASE_URL . "produk/index.php?".$type);
 	exit;
 }
 

@@ -30,23 +30,11 @@ $hapus_pemasukan = mysqli_query($koneksi, "DELETE FROM pemasukan WHERE id_pemasu
 
 if ($hapus_pemasukan) {
 	setAlert("Berhasil!", "Pemasukan Barang berhasil dihapus!", "success");
-	if ($type == 'stok') {
-		header("Location:" . BASE_URL . "pemasukan/index.php?stok");
-	} elseif ($type == 'jenis_saldo') {
-		header("Location:" . BASE_URL . "pemasukan/index.php?jenis_saldo");
-	} else {
-		header("Location:" . BASE_URL . "pemasukan/index.php");
-	}
+	header("Location:" . BASE_URL . "pemasukan/index.php?".$type);
 	exit;
 } else {
 	setAlert("Gagal!", "Pemasukan Barang gagal dihapus!", "error");
-	if ($type == 'stok') {
-		header("Location:" . BASE_URL . "pemasukan/index.php?stok");
-	} elseif ($type == 'jenis_saldo') {
-		header("Location:" . BASE_URL . "pemasukan/index.php?jenis_saldo");
-	} else {
-		header("Location:" . BASE_URL . "pemasukan/index.php");
-	}
+	header("Location:" . BASE_URL . "pemasukan/index.php?".$type);
 	exit;
 }
 
