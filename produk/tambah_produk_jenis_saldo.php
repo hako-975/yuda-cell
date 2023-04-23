@@ -119,6 +119,7 @@ $data_profile = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM user WH
 											<option value="<?= $djs['id_jenis_saldo']; ?>"><?= $djs['jenis_saldo']; ?> (sisa saldo Rp. <?= str_replace(",", ".", number_format($djs['jumlah_saldo'])); ?>)</option>
 										<?php endforeach ?>
 									</select>
+									<a href="<?= BASE_URL; ?>jenis_saldo/tambah_jenis_saldo.php">Tidak Ada Jenis Saldo? Tambahkan Jenis Saldo</a>
 								</div>
 								<div class="form-group text-right">
 									<button type="submit" name="btnTambahProdukJenisSaldo" class="btn btn-primary"><i class="fas fa-fw fa-paper-plane"></i> Kirim</button>

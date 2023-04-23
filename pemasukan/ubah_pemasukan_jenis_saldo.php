@@ -27,12 +27,21 @@ if (isset($_POST['btnUbahPemasukanJenisSaldo'])) {
 	$id_supplier = htmlspecialchars($_POST['id_supplier']);
 	$tanggal_pemasukan = htmlspecialchars($_POST['tanggal_pemasukan']);
 	$jumlah = htmlspecialchars($_POST['jumlah']);
-	// $jumlah_old = $data_pemasukan_jenis_saldo['jumlah'];
-
+	$jumlah_old = $data_pemasukan_jenis_saldo['jumlah'];
+	$id_jenis_saldo_old = $data_pemasukan_jenis_saldo['id_jenis_saldo'];
 	$ubah_pemasukan_jenis_saldo = mysqli_query($koneksi, "UPDATE pemasukan SET id_jenis_saldo = '$id_jenis_saldo', id_supplier = '$id_supplier', tanggal_pemasukan = '$tanggal_pemasukan', jumlah = '$jumlah' WHERE id_pemasukan = '$id_pemasukan'");
-	// $update_stok_barang = mysqli_query($koneksi, "UPDATE barang SET stok_barang = (stok_barang - $jumlah_old) + '$jumlah' WHERE id_pemasukan = '$id_pemasukan'");
 
 	if ($ubah_pemasukan_jenis_saldo) {
+		if ($id_jenis_saldo == $id_jenis_saldo_old) {
+			$update_jenis_saldo = mysqli_query($koneksi, "UPDATE jenis_saldo SET jumlah_saldo = (jumlah_saldo - '$jumlah_old') + '$jumlah' WHERE id_jenis_saldo = '$id_jenis_saldo'");
+		} else {
+			// jika ganti id jenis saldo, kembalikan jumlah old jenis saldo 
+			$update_jenis_saldo_old = mysqli_query($koneksi, "UPDATE jenis_saldo SET jumlah_saldo = jumlah_saldo - '$jumlah_old' WHERE id_jenis_saldo = '$id_jenis_saldo_old'");
+			// karena id jenis saldo baru, maka tidak perlu dikurangi old 
+			$update_jenis_saldo = mysqli_query($koneksi, "UPDATE jenis_saldo SET jumlah_saldo = jumlah_saldo + '$jumlah' WHERE id_jenis_saldo = '$id_jenis_saldo'");
+
+		}
+
 		setAlert("Berhasil!", "Pemasukan Jenis Saldo berhasil diubah!", "success");
 		header("Location:" . BASE_URL . "pemasukan/index.php?jenis_saldo");
 		exit;

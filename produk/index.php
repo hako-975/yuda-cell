@@ -6,9 +6,9 @@ if (!isset($_SESSION['id_user'])) {
 	exit;
 }
 
-$produk_stok = mysqli_query($koneksi, "SELECT * FROM produk WHERE produk.stok != '0' ORDER BY nama_produk ASC");
+$produk_stok = mysqli_query($koneksi, "SELECT id_produk, nama_produk, harga_beli, harga_jual, stok FROM produk WHERE stok <= 0 || stok >= 0 ORDER BY nama_produk ASC");
 
-$produk_jenis_saldo = mysqli_query($koneksi, "SELECT * FROM produk INNER JOIN jenis_saldo ON produk.id_jenis_saldo = jenis_saldo.id_jenis_saldo WHERE produk.id_jenis_saldo != '0' ORDER BY nama_produk ASC");
+$produk_jenis_saldo = mysqli_query($koneksi, "SELECT id_produk, nama_produk, harga_beli, harga_jual, produk.id_jenis_saldo, jenis_saldo, jumlah_saldo FROM produk INNER JOIN jenis_saldo ON produk.id_jenis_saldo = jenis_saldo.id_jenis_saldo ORDER BY produk.nama_produk ASC");
 
 $id_user = htmlspecialchars($_SESSION['id_user']);
 $data_profile = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM user WHERE id_user = '$id_user'"));
@@ -77,7 +77,7 @@ $data_profile = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM user WH
 												<th>Nama Produk</th>
 												<th>Harga Beli</th>
 												<th>Harga Jual</th>
-												<th>Stok Produk</th>
+												<th>Stok</th>
 												<?php if ($data_profile['hak_akses'] == 'administrator'): ?>
 													<th>Aksi</th>
 												<?php endif ?>

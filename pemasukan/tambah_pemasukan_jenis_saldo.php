@@ -47,9 +47,9 @@ if (isset($_POST['btnTambahPemasukanJenisSaldo'])) {
 
 	$tambah_pemasukan_jenis_saldo = mysqli_query($koneksi, "INSERT INTO pemasukan VALUES('', null, '$id_jenis_saldo', '$id_supplier', '$tanggal_pemasukan', '$jumlah')");
 	
-	// $update_stok_barang = mysqli_query($koneksi, "UPDATE barang SET stok_barang = stok_barang + '$jumlah' WHERE id_jenis_saldo = '$id_jenis_saldo'");
 	
 	if ($tambah_pemasukan_jenis_saldo) {
+		$update_jenis_saldo = mysqli_query($koneksi, "UPDATE jenis_saldo SET jumlah_saldo = jumlah_saldo + '$jumlah' WHERE id_jenis_saldo = '$id_jenis_saldo'");
 		setAlert("Berhasil!", "Pemasukan Jenis Saldo berhasil ditambahkan!", "success");
 		header("Location:" . BASE_URL . "pemasukan/index.php?jenis_saldo");
 		exit;

@@ -20,20 +20,26 @@ if ($_SESSION['hak_akses'] != 'administrator') {
 $id_pemasukan = htmlspecialchars($_GET['id_pemasukan']);
 $type = htmlspecialchars($_GET['type']);
 
-// $get_jumlah_old = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM pemasukan WHERE id_pemasukan = '$id_pemasukan'"));
-// $jumlah = $get_jumlah_old['jumlah'];
-// $id_barang = $get_jumlah_old['id_barang'];
+$get_pemasukan_old = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM pemasukan WHERE id_pemasukan = '$id_pemasukan'"));
+$jumlah = $get_pemasukan_old['jumlah'];
 
-// $update_stok_barang = mysqli_query($koneksi, "UPDATE barang SET stok_barang = stok_barang - '$jumlah' WHERE id_barang = '$id_barang'");
+if ($type == 'stok') {
+	$id_produk = $get_pemasukan_old['id_produk'];
+	$update_stok = mysqli_query($koneksi, "UPDATE produk SET stok = stok - '$jumlah' WHERE id_produk = '$id_produk'");
+} else {
+	$id_jenis_saldo = $get_pemasukan_old['id_jenis_saldo'];
+	$update_jenis_saldo = mysqli_query($koneksi, "UPDATE jenis_saldo SET jumlah_saldo = jumlah_saldo - '$jumlah' WHERE id_jenis_saldo = '$id_jenis_saldo'");
+}
+
 
 $hapus_pemasukan = mysqli_query($koneksi, "DELETE FROM pemasukan WHERE id_pemasukan = '$id_pemasukan'");
 
 if ($hapus_pemasukan) {
-	setAlert("Berhasil!", "Pemasukan Barang berhasil dihapus!", "success");
+	setAlert("Berhasil!", "Pemasukan berhasil dihapus!", "success");
 	header("Location:" . BASE_URL . "pemasukan/index.php?".$type);
 	exit;
 } else {
-	setAlert("Gagal!", "Pemasukan Barang gagal dihapus!", "error");
+	setAlert("Gagal!", "Pemasukan gagal dihapus!", "error");
 	header("Location:" . BASE_URL . "pemasukan/index.php?".$type);
 	exit;
 }

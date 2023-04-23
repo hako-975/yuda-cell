@@ -16,7 +16,8 @@ if ($_SESSION['hak_akses'] != 'administrator') {
 	exit;
 }
 
-$produk = mysqli_query($koneksi, "SELECT * FROM produk ORDERSC");
+$produk = mysqli_query($koneksi, "SELECT id_produk, nama_produk, harga_beli, harga_jual, stok FROM produk WHERE stok <= 0 || stok >= 0 ORDER BY nama_produk ASC");
+
 $supplier = mysqli_query($koneksi, "SELECT * FROM supplier ORDER BY nama_supplier ASC");
 
 if (isset($_POST['btnTambahPemasukanStok'])) {
@@ -47,9 +48,10 @@ if (isset($_POST['btnTambahPemasukanStok'])) {
 
 	$tambah_pemasukan_stok = mysqli_query($koneksi, "INSERT INTO pemasukan VALUES('', '$id_produk', null, '$id_supplier', '$tanggal_pemasukan', '$jumlah')");
 	
-	// $update_stok_barang = mysqli_query($koneksi, "UPDATE barang SET stok_barang = stok_barang + '$jumlah' WHERE id_produk = '$id_produk'");
 	
 	if ($tambah_pemasukan_stok) {
+		$update_stok = mysqli_query($koneksi, "UPDATE produk SET stok = stok + '$jumlah' WHERE id_produk = '$id_produk'");
+
 		setAlert("Berhasil!", "Pemasukan Stok berhasil ditambahkan!", "success");
 		header("Location:" . BASE_URL . "pemasukan/index.php?stok");
 		exit;
@@ -118,7 +120,7 @@ $data_profile = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM user WH
 									<select name="id_produk" id="id_produk" class="custom-select">
 										<option value="0">--- Pilih Nama Produk ---</option>
 										<?php foreach ($produk as $dp): ?>
-											<option value="<?= $dp['id_produk']; ?>"><?= $; ?></option>
+											<option value="<?= $dp['id_produk']; ?>"><?= $dp['nama_produk']; ?></option>
 										<?php endforeach ?>
 									</select>
 								</div>

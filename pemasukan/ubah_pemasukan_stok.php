@@ -19,7 +19,8 @@ if ($_SESSION['hak_akses'] != 'administrator') {
 $id_pemasukan = htmlspecialchars($_GET['id_pemasukan']);
 $data_pemasukan_stok = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM pemasukan INNER JOIN produk ON pemasukan.id_produk = produk.id_produk INNER JOIN supplier ON pemasukan.id_supplier = supplier.id_supplier WHERE id_pemasukan = '$id_pemasukan'"));
 
-$produk = mysqli_query($koneksi, "SELECT * FROM produk ORDER BY nama_produk ASC");
+$produk = mysqli_query($koneksi, "SELECT id_produk, nama_produk, harga_beli, harga_jual, stok FROM produk WHERE stok <= 0 || stok >= 0 ORDER BY nama_produk ASC");
+
 $supplier = mysqli_query($koneksi, "SELECT * FROM supplier ORDER BY nama_supplier ASC");
 
 if (isset($_POST['btnUbahPemasukanStok'])) {
@@ -28,11 +29,20 @@ if (isset($_POST['btnUbahPemasukanStok'])) {
 	$tanggal_pemasukan = htmlspecialchars($_POST['tanggal_pemasukan']);
 	$jumlah = htmlspecialchars($_POST['jumlah']);
 	$jumlah_old = $data_pemasukan_stok['jumlah'];
+	$id_produk_old = $data_pemasukan_stok['id_produk'];
 
 	$ubah_pemasukan = mysqli_query($koneksi, "UPDATE pemasukan SET id_produk = '$id_produk', id_supplier = '$id_supplier', tanggal_pemasukan = '$tanggal_pemasukan', jumlah = '$jumlah' WHERE id_pemasukan = '$id_pemasukan'");
 
 	if ($ubah_pemasukan) {
-		// $update_stok = mysqli_query($koneksi, "UPDATE produk SET stok_produk = (stok_produk - $jumlah_old) + '$jumlah' WHERE id_produk = '$id_produk'");
+		if ($id_produk == $id_produk_old) {
+			$update_stok = mysqli_query($koneksi, "UPDATE produk SET stok = (stok - '$jumlah_old') + '$jumlah' WHERE id_produk = '$id_produk'");
+		} else {
+			// jika ganti id produk, kembalikan stok old produk 
+			$update_stok_old = mysqli_query($koneksi, "UPDATE produk SET stok = stok - '$jumlah_old' WHERE id_produk = '$id_produk_old'");
+			// karena id produk baru, maka tidak perlu dikurangi old 
+			$update_stok = mysqli_query($koneksi, "UPDATE produk SET stok = stok + '$jumlah' WHERE id_produk = '$id_produk'");
+		}
+
 		setAlert("Berhasil!", "Pemasukan Stok berhasil diubah!", "success");
 		header("Location:" . BASE_URL . "pemasukan/index.php?stok");
 		exit;
