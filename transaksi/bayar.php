@@ -10,7 +10,7 @@ $id_transaksi = htmlspecialchars($_GET['id_transaksi']);
 
 $data_transaksi = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM transaksi INNER JOIN user ON transaksi.id_user = user.id_user WHERE transaksi.id_transaksi = '$id_transaksi'"));
 
-$detail_transaksi = mysqli_query($koneksi, "SELECT * FROM detail_transaksi INNER JOIN transaksi ON detail_transaksi.id_transaksi = transaksi.id_transaksi INNER JOIN barang ON detail_transaksi.id_barang = barang.id_barang WHERE detail_transaksi.id_transaksi = '$id_transaksi' ORDER BY barang.nama_barang ASC");
+$detail_transaksi = mysqli_query($koneksi, "SELECT * FROM detail_transaksi INNER JOIN transaksi ON detail_transaksi.id_transaksi = transaksi.id_transaksi INNER JOIN produk ON detail_transaksi.id_produk = produk.id_produk WHERE detail_transaksi.id_transaksi = '$id_transaksi' ORDER BY produk.nama_produk ASC");
 
 $id_user = htmlspecialchars($_SESSION['id_user']);
 $data_profile = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM user WHERE id_user = '$id_user'"));
@@ -32,11 +32,11 @@ if (isset($_POST['btnBayar'])) {
 	$update_transaksi = mysqli_query($koneksi, "UPDATE transaksi SET bayar = '$bayar', kembalian = '$kembalian' WHERE id_transaksi = '$id_transaksi'");
 
 	if ($update_transaksi) {
-		setAlert("Berhasil!", "Pembayaran Transaksi Barang dengan ID Transaksi $id_transaksi berhasil!", "success");
+		setAlert("Berhasil!", "Pembayaran Transaksi Produk dengan ID Transaksi $id_transaksi berhasil!", "success");
 		header("Location:" . BASE_URL . "transaksi/detail_transaksi.php?id_transaksi=$id_transaksi");
 		exit;
 	} else {
-		setAlert("Gagal!", "Pembayaran Transaksi Barang dengan ID Transaksi $id_transaksi gagal!", "error");
+		setAlert("Gagal!", "Pembayaran Transaksi Produk dengan ID Transaksi $id_transaksi gagal!", "error");
 		echo "
 			<script>
 				window.history.back();
@@ -97,8 +97,8 @@ $data_profile = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM user WH
 									<thead>
 										<tr>
 											<th>No.</th>
-											<th>Nama Barang</th>
-											<th>Kuantitas</th>
+											<th>Nama Produk</th>
+											<th>Jumlah</th>
 											<th>Subtotal</th>
 										</tr>
 									</thead>
@@ -107,8 +107,8 @@ $data_profile = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM user WH
 										<?php foreach ($detail_transaksi as $ddt): ?>
 											<tr>
 												<td><?= $i++; ?></td>
-												<td><?= $ddt['nama_barang']; ?></td>
-												<td><?= $ddt['kuantitas']; ?></td>
+												<td><?= $ddt['nama_produk']; ?></td>
+												<td><?= $ddt['jumlah']; ?></td>
 												<td>Rp. <?= str_replace(",", ".", number_format($ddt['subtotal'])); ?></td>
 											</tr>
 										<?php endforeach ?>

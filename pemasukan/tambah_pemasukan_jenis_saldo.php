@@ -121,6 +121,7 @@ $data_profile = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM user WH
 											<option value="<?= $djs['id_jenis_saldo']; ?>"><?= $djs['jenis_saldo']; ?></option>
 										<?php endforeach ?>
 									</select>
+									<a href="<?= BASE_URL; ?>jenis_saldo/tambah_jenis_saldo.php">Tidak Ada Jenis Saldo? Tambahkan Jenis Saldo</a>
 								</div>
 								<div class="form-group">
 									<label for="id_supplier">Nama Supplier</label>
@@ -130,6 +131,7 @@ $data_profile = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM user WH
 											<option value="<?= $ds['id_supplier']; ?>"><?= $ds['nama_supplier']; ?></option>
 										<?php endforeach ?>
 									</select>
+									<a href="<?= BASE_URL; ?>supplier/tambah_supplier.php">Tidak Ada Supplier? Tambahkan Supplier</a>
 								</div>
 								<div class="form-group">
 									<label for="jumlah">Jumlah Pemasukan Saldo</label>

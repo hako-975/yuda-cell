@@ -123,6 +123,7 @@ $data_profile = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM user WH
 											<option value="<?= $dp['id_produk']; ?>"><?= $dp['nama_produk']; ?></option>
 										<?php endforeach ?>
 									</select>
+									<a href="<?= BASE_URL; ?>produk/tambah_produk_stok.php">Tidak Ada Produk? Tambahkan Produk</a>
 								</div>
 								<div class="form-group">
 									<label for="id_supplier">Nama Supplier</label>
@@ -132,6 +133,7 @@ $data_profile = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM user WH
 											<option value="<?= $ds['id_supplier']; ?>"><?= $ds['nama_supplier']; ?></option>
 										<?php endforeach ?>
 									</select>
+									<a href="<?= BASE_URL; ?>supplier/tambah_supplier.php">Tidak Ada Supplier? Tambahkan Supplier</a>
 								</div>
 								<div class="form-group">
 									<label for="jumlah">Jumlah Pemasukan Stok</label>
