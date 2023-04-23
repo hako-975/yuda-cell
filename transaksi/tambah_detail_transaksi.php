@@ -8,24 +8,24 @@ if (!isset($_SESSION['id_user'])) {
 
 $id_transaksi = htmlspecialchars($_GET['id_transaksi']);
 
-$barang = mysqli_query($koneksi, "SELECT * FROM barang INNER JOIN jenis_barang ON barang.id_jenis_barang = jenis_barang.id_jenis_barang ORDER BY nama_barang ASC");
+$produk = mysqli_query($koneksi, "SELECT * FROM produk LEFT OUTER JOIN jenis_saldo ON produk.id_jenis_saldo = jenis_saldo.id_jenis_saldo ORDER BY nama_produk ASC");
 
 // Convert the result set to an array
-$barang_arr = array();
-while ($row = mysqli_fetch_assoc($barang)) {
-    $barang_arr[] = $row;
+$produk_arr = array();
+while ($row = mysqli_fetch_assoc($produk)) {
+    $produk_arr[] = $row;
 }
 
 // Convert the array to a JSON string
-$barangJson = json_encode($barang_arr);
+$produkJson = json_encode($produk_arr);
 
 if (isset($_POST['btnTambahDetailTransaksi'])) {
-	$id_barang = htmlspecialchars($_POST['id_barang']);
-	$kuantitas = htmlspecialchars($_POST['kuantitas']);
+	$id_produk = htmlspecialchars($_POST['id_produk']);
+	$jumlah = htmlspecialchars($_POST['jumlah']);
 	$subtotal = htmlspecialchars($_POST['subtotal']);
 
-	if ($id_barang == 0) {
-		setAlert("Gagal!", "Pilih Barang terlebih dahulu!", "error");
+	if ($id_produk == 0) {
+		setAlert("Gagal!", "Pilih Produk terlebih dahulu!", "error");
 		echo "
 			<script>
 				window.history.back();
@@ -34,21 +34,21 @@ if (isset($_POST['btnTambahDetailTransaksi'])) {
 		exit;
 	}
 
-	$tambah_detail_transaksi = mysqli_query($koneksi, "INSERT INTO detail_transaksi VALUES('', '$id_transaksi', '$id_barang', '$kuantitas', '$subtotal')");
+	$tambah_detail_transaksi = mysqli_query($koneksi, "INSERT INTO detail_transaksi VALUES('', '$id_transaksi', '$id_produk', '$jumlah', '$subtotal')");
 
 	$get_total_harga = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT SUM(subtotal) as total_harga FROM detail_transaksi WHERE id_transaksi = '$id_transaksi'"));
 	$total_harga = $get_total_harga['total_harga'];
 	$update_total_harga = mysqli_query($koneksi, "UPDATE transaksi SET total_harga = '$total_harga' WHERE id_transaksi = '$id_transaksi'");
 
-	$update_stok_barang = mysqli_query($koneksi, "UPDATE barang SET stok_barang = stok_barang - '$kuantitas' WHERE id_barang = '$id_barang'");
+	// $update_stok = mysqli_query($koneksi, "UPDATE produk SET stok = stok - '$jumlah' WHERE id_produk = '$id_produk'");
 
 
 	if ($tambah_detail_transaksi) {
-		setAlert("Berhasil!", "Transaksi Barang berhasil ditambahkan!", "success");
+		setAlert("Berhasil!", "Transaksi Produk berhasil ditambahkan!", "success");
 		header("Location:" . BASE_URL . "transaksi/detail_transaksi.php?id_transaksi=$id_transaksi");
 		exit;
 	} else {
-		setAlert("Gagal!", "Transaksi Barang gagal ditambahkan!", "error");
+		setAlert("Gagal!", "Transaksi Produk gagal ditambahkan!", "error");
 		echo "
 			<script>
 				window.history.back();
@@ -68,7 +68,7 @@ $data_profile = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM user WH
 <html lang="en">
 
 <head>
-    <title>Tambah Transaksi Barang - ID Transaksi <?= $id_transaksi; ?></title>
+    <title>Tambah Transaksi Produk - ID Transaksi <?= $id_transaksi; ?></title>
     <?php include_once '../include/head.php'; ?>
 
 </head>
@@ -98,7 +98,7 @@ $data_profile = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM user WH
                 		<div class="card-header py-3">
                             <div class="row">
                                 <div class="col head-left">
-                                    <h5 class="my-auto font-weight-bold text-primary">Tambah Jenis Barang</h5>
+                                    <h5 class="my-auto font-weight-bold text-primary">Tambah Transaksi Produk</h5>
                                 </div>
                                 <div class="col head-right">
                                     <a href="<?= BASE_URL; ?>transaksi/detail_transaksi.php?id_transaksi=<?= $id_transaksi; ?>" class="btn btn-sm btn-primary"><i class="fas fa-fw fa-arrow-left"></i> Kembali</a>
@@ -108,17 +108,17 @@ $data_profile = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM user WH
                         <div class="card-body">
 							<form method="post">
 								<div class="form-group">
-									<label for="id_barang">Nama Barang</label>
-									<select name="id_barang" id="id_barang" class="custom-select">
-										<option value="0">--- Pilih Nama Barang ---</option>
-										<?php foreach ($barang as $db): ?>
-											<option value="<?= $db['id_barang']; ?>"><?= $db['nama_barang']; ?> (<?= $db['stok_barang']; ?>)</option>
+									<label for="id_produk">Nama Produk</label>
+									<select name="id_produk" id="id_produk" class="custom-select">
+										<option value="0">--- Pilih Nama Produk ---</option>
+										<?php foreach ($produk as $dp): ?>
+											<option value="<?= $dp['id_produk']; ?>"><?= $dp['nama_produk']; ?> <?= ($dp['jenis_saldo']) ? '('.$dp['jenis_saldo'].')' : ''; ?></option>
 										<?php endforeach ?>
 									</select>
 								</div>
 								<div class="form-group">
-									<label for="kuantitas">Kuantitas</label>
-									<input type="number" name="kuantitas" id="kuantitas" class="form-control" required>
+									<label for="jumlah">Jumlah</label>
+									<input type="number" name="jumlah" id="jumlah" class="form-control" required>
 								</div>
 								<div class="form-group">
 									<label for="subtotal">Subtotal</label>
@@ -153,37 +153,37 @@ $data_profile = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM user WH
 
     <?php include_once '../include/script.php' ?>
     <script>
-	  // Initialize the barang variable with the PHP-generated $barang array
-	  const barang = <?= $barangJson; ?>;
+	  // Initialize the produk variable with the PHP-generated $produk array
+	  const produk = <?= $produkJson; ?>;
 
-	  const idBarangSelect = document.getElementById('id_barang');
-	  const kuantitasInput = document.getElementById('kuantitas');
+	  const idProdukSelect = document.getElementById('id_produk');
+	  const jumlahInput = document.getElementById('jumlah');
 	  const subtotalInput = document.getElementById('subtotal');
 
-	  // Calculate subtotal when either "Nama Barang" or "Kuantitas" changes
-	  idBarangSelect.addEventListener('change', () => {
-	    const selectedBarang = idBarangSelect.options[idBarangSelect.selectedIndex];
-	    updateSubtotal(selectedBarang);
+	  // Calculate subtotal when either "Nama Produk" or "Jumlah" changes
+	  idProdukSelect.addEventListener('change', () => {
+	    const selectedProduk = idProdukSelect.options[idProdukSelect.selectedIndex];
+	    updateSubtotal(selectedProduk);
 	  });
 
-	  kuantitasInput.addEventListener('input', () => {
-	    const selectedBarang = idBarangSelect.options[idBarangSelect.selectedIndex];
-	    updateSubtotal(selectedBarang);
+	  jumlahInput.addEventListener('input', () => {
+	    const selectedProduk = idProdukSelect.options[idProdukSelect.selectedIndex];
+	    updateSubtotal(selectedProduk);
 	  });
 
 	  // Function to calculate subtotal
-	  function updateSubtotal(selectedBarang) {
-		  const idBarang = selectedBarang.value;
-		  const kuantitas = kuantitasInput.value;
+	  function updateSubtotal(selectedProduk) {
+		  const idProduk = selectedProduk.value;
+		  const jumlah = jumlahInput.value;
 
-		  // Find the selected barang object from the barang array
-		  const selectedBarangObj = barang.find((b) => b.id_barang == idBarang);
+		  // Find the selected produk object from the produk array
+		  const selectedProdukObj = produk.find((b) => b.id_produk == idProduk);
 
-		  // Get the harga_jual property of the selected barang object
-		  const hargaBarang = selectedBarangObj.harga_jual;
+		  // Get the harga_jual property of the selected produk object
+		  const hargaProduk = selectedProdukObj.harga_jual;
 
 		  // Calculate the new subtotal value and update the input field
-		  const subtotal = hargaBarang * kuantitas;
+		  const subtotal = hargaProduk * jumlah;
 		  subtotalInput.value = subtotal;
 		}
 	</script>

@@ -16,7 +16,7 @@ if ($data_transaksi == null) {
 	exit;
 }
 
-$detail_transaksi = mysqli_query($koneksi, "SELECT * FROM detail_transaksi INNER JOIN transaksi ON detail_transaksi.id_transaksi = transaksi.id_transaksi INNER JOIN barang ON detail_transaksi.id_barang = barang.id_barang WHERE detail_transaksi.id_transaksi = '$id_transaksi' ORDER BY barang.nama_barang ASC");
+$detail_transaksi = mysqli_query($koneksi, "SELECT * FROM detail_transaksi INNER JOIN transaksi ON detail_transaksi.id_transaksi = transaksi.id_transaksi INNER JOIN produk ON detail_transaksi.id_produk = produk.id_produk LEFT OUTER JOIN jenis_saldo ON produk.id_jenis_saldo = jenis_saldo.id_jenis_saldo WHERE detail_transaksi.id_transaksi = '$id_transaksi' ORDER BY produk.nama_produk ASC");
 
 $id_user = htmlspecialchars($_SESSION['id_user']);
 $data_profile = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM user WHERE id_user = '$id_user'"));
@@ -74,7 +74,7 @@ $data_profile = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM user WH
                                 </div>
                                 <?php if ($data_transaksi['bayar'] == 0): ?>
                                 	<div class="col head-right">
-										<a href="<?= BASE_URL; ?>transaksi/tambah_detail_transaksi.php?id_transaksi=<?= $data_transaksi['id_transaksi']; ?>" class="btn btn-sm btn-primary"><i class="fas fa-fw fa-plus"></i> Tambah Transaksi Barang</a>
+										<a href="<?= BASE_URL; ?>transaksi/tambah_detail_transaksi.php?id_transaksi=<?= $data_transaksi['id_transaksi']; ?>" class="btn btn-sm btn-primary"><i class="fas fa-fw fa-plus"></i> Tambah Transaksi Produk</a>
 	                                </div>
                                 <?php endif ?>
                             </div>
@@ -85,8 +85,8 @@ $data_profile = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM user WH
 									<thead>
 										<tr>
 											<th>No.</th>
-											<th>Nama Barang</th>
-											<th>Kuantitas</th>
+											<th>Nama Produk</th>
+											<th>Jumlah</th>
 											<th>Subtotal</th>
                             				<?php if ($data_transaksi['bayar'] == 0): ?>
 												<th>Aksi</th>
@@ -98,13 +98,13 @@ $data_profile = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM user WH
 										<?php foreach ($detail_transaksi as $ddt): ?>
 											<tr>
 												<td><?= $i++; ?></td>
-												<td><?= $ddt['nama_barang']; ?></td>
-												<td><?= $ddt['kuantitas']; ?></td>
+												<td><?= $ddt['nama_produk']; ?> <?= ($ddt['jenis_saldo']) ? '('.$ddt['jenis_saldo'].')' : ''; ?></td>
+												<td><?= $ddt['jumlah']; ?></td>
 												<td>Rp. <?= str_replace(",", ".", number_format($ddt['subtotal'])); ?></td>
                                 				<?php if ($data_transaksi['bayar'] == 0): ?>
 													<td>
 														<a class="btn btn-sm btn-success" href="ubah_detail_transaksi.php?id_detail_transaksi=<?= $ddt['id_detail_transaksi']; ?>&id_transaksi=<?= $id_transaksi; ?>"><i class="fas fa-fw fa-edit"></i> Ubah</a>
-														<a class="btn btn-sm btn-danger btn-delete" data-nama="Data Transaksi Barang <?= $ddt['nama_barang']; ?> akan terhapus!" href="hapus_detail_transaksi.php?id_detail_transaksi=<?= $ddt['id_detail_transaksi']; ?>&id_transaksi=<?= $id_transaksi; ?>"><i class="fas fa-fw fa-trash"></i> Hapus</a>
+														<a class="btn btn-sm btn-danger btn-delete" data-nama="Data Transaksi Produk <?= $ddt['nama_produk']; ?> akan terhapus!" href="hapus_detail_transaksi.php?id_detail_transaksi=<?= $ddt['id_detail_transaksi']; ?>&id_transaksi=<?= $id_transaksi; ?>"><i class="fas fa-fw fa-trash"></i> Hapus</a>
 													</td>
 												<?php endif ?>
 											</tr>
