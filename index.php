@@ -11,66 +11,66 @@ if (!isset($_SESSION['id_user']))
 $id_user = htmlspecialchars($_SESSION['id_user']);
 $data_profile = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM user WHERE id_user = '$id_user'"));
 
-// $omset = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT sum(total_harga) as omset FROM transaksi"));
-// $laba = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT SUM((b.harga_jual - b.harga_beli) * dt.kuantitas) AS laba FROM detail_transaksi dt INNER JOIN barang b ON dt.id_barang = b.id_barang"));
+$omset = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT sum(total_harga) as omset FROM transaksi"));
+$laba = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT SUM((p.harga_jual - p.harga_beli) * dt.jumlah) AS laba FROM detail_transaksi dt INNER JOIN produk p ON dt.id_produk = p.id_produk"));
 
-// $jumlah_transaksi = mysqli_num_rows(mysqli_query($koneksi, "SELECT * FROM transaksi"));
+$jumlah_transaksi = mysqli_num_rows(mysqli_query($koneksi, "SELECT * FROM transaksi"));
 
-// $barang_paling_laku = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT barang.id_barang, barang.nama_barang, SUM(kuantitas) as laku FROM detail_transaksi INNER JOIN barang ON detail_transaksi.id_barang = barang.id_barang GROUP BY detail_transaksi.id_barang ORDER BY laku DESC LIMIT 1"));
+$barang_paling_laku = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT produk.id_produk, produk.nama_produk, SUM(jumlah) as laku FROM detail_transaksi INNER JOIN produk ON detail_transaksi.id_produk = produk.id_produk GROUP BY detail_transaksi.id_produk ORDER BY laku DESC LIMIT 1"));
 
-// $transaksi = mysqli_query($koneksi, "SELECT * FROM transaksi INNER JOIN user ON transaksi.id_user = user.id_user ORDER BY tanggal_transaksi DESC");
+$transaksi = mysqli_query($koneksi, "SELECT * FROM transaksi INNER JOIN user ON transaksi.id_user = user.id_user ORDER BY tanggal_transaksi DESC");
 
-// // 0 = monday
-// $monday = mysqli_num_rows(mysqli_query($koneksi, "SELECT * FROM transaksi WHERE WEEKDAY(tanggal_transaksi) = '0'"));
-// // 1 = tuesday
-// $tuesday = mysqli_num_rows(mysqli_query($koneksi, "SELECT * FROM transaksi WHERE WEEKDAY(tanggal_transaksi) = '1'"));
-// // 2 = wednesday
-// $wednesday = mysqli_num_rows(mysqli_query($koneksi, "SELECT * FROM transaksi WHERE WEEKDAY(tanggal_transaksi) = '2'"));
-// // 3 = thursday
-// $thursday = mysqli_num_rows(mysqli_query($koneksi, "SELECT * FROM transaksi WHERE WEEKDAY(tanggal_transaksi) = '3'"));
-// // 4 = friday
-// $friday = mysqli_num_rows(mysqli_query($koneksi, "SELECT * FROM transaksi WHERE WEEKDAY(tanggal_transaksi) = '4'"));
-// // 5 = saturday
-// $saturday = mysqli_num_rows(mysqli_query($koneksi, "SELECT * FROM transaksi WHERE WEEKDAY(tanggal_transaksi) = '5'"));
-// // 6 = sunday
-// $sunday = mysqli_num_rows(mysqli_query($koneksi, "SELECT * FROM transaksi WHERE WEEKDAY(tanggal_transaksi) = '6'"));
+// 0 = monday
+$monday = mysqli_num_rows(mysqli_query($koneksi, "SELECT * FROM transaksi WHERE WEEKDAY(tanggal_transaksi) = '0'"));
+// 1 = tuesday
+$tuesday = mysqli_num_rows(mysqli_query($koneksi, "SELECT * FROM transaksi WHERE WEEKDAY(tanggal_transaksi) = '1'"));
+// 2 = wednesday
+$wednesday = mysqli_num_rows(mysqli_query($koneksi, "SELECT * FROM transaksi WHERE WEEKDAY(tanggal_transaksi) = '2'"));
+// 3 = thursday
+$thursday = mysqli_num_rows(mysqli_query($koneksi, "SELECT * FROM transaksi WHERE WEEKDAY(tanggal_transaksi) = '3'"));
+// 4 = friday
+$friday = mysqli_num_rows(mysqli_query($koneksi, "SELECT * FROM transaksi WHERE WEEKDAY(tanggal_transaksi) = '4'"));
+// 5 = saturday
+$saturday = mysqli_num_rows(mysqli_query($koneksi, "SELECT * FROM transaksi WHERE WEEKDAY(tanggal_transaksi) = '5'"));
+// 6 = sunday
+$sunday = mysqli_num_rows(mysqli_query($koneksi, "SELECT * FROM transaksi WHERE WEEKDAY(tanggal_transaksi) = '6'"));
 
-// $jenis_barang = mysqli_query($koneksi, "SELECT *, SUM(kuantitas) as total_kuantitas FROM detail_transaksi INNER JOIN barang ON detail_transaksi.id_barang = barang.id_barang INNER JOIN jenis_barang ON barang.id_jenis_barang = jenis_barang.id_jenis_barang GROUP BY detail_transaksi.id_barang");
+$produk = mysqli_query($koneksi, "SELECT *, SUM(jumlah) as total FROM detail_transaksi INNER JOIN produk ON detail_transaksi.id_produk = produk.id_produk LEFT OUTER JOIN jenis_saldo ON produk.id_jenis_saldo = jenis_saldo.id_jenis_saldo GROUP BY detail_transaksi.id_produk");
 
-// if (isset($_GET['btnFilter'])) {
-//     $dari_tanggal = htmlspecialchars($_GET['dari_tanggal']);
-//     $sampai_tanggal = htmlspecialchars($_GET['sampai_tanggal']);
+if (isset($_GET['btnFilter'])) {
+    $dari_tanggal = htmlspecialchars($_GET['dari_tanggal']);
+    $sampai_tanggal = htmlspecialchars($_GET['sampai_tanggal']);
 
-//     $dari_tanggal_baru =  $dari_tanggal . ' 00:00:00';
-//     $sampai_tanggal_baru =  $sampai_tanggal . ' 23:59:59';
+    $dari_tanggal_baru =  $dari_tanggal . ' 00:00:00';
+    $sampai_tanggal_baru =  $sampai_tanggal . ' 23:59:59';
 
-//     $omset = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT sum(total_harga) as omset FROM transaksi WHERE tanggal_transaksi BETWEEN '$dari_tanggal_baru' AND '$sampai_tanggal_baru'"));
-//     $laba = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT SUM((b.harga_jual - b.harga_beli) * dt.kuantitas) AS laba FROM detail_transaksi dt INNER JOIN barang b ON dt.id_barang = b.id_barang INNER JOIN transaksi t ON dt.id_transaksi = t.id_transaksi WHERE tanggal_transaksi BETWEEN '$dari_tanggal_baru' AND '$sampai_tanggal_baru'"));
+    $omset = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT sum(total_harga) as omset FROM transaksi WHERE tanggal_transaksi BETWEEN '$dari_tanggal_baru' AND '$sampai_tanggal_baru'"));
+    $laba = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT SUM((p.harga_jual - p.harga_beli) * dt.jumlah) AS laba FROM detail_transaksi dt INNER JOIN produk p ON dt.id_produk = p.id_produk INNER JOIN transaksi t ON dt.id_transaksi = t.id_transaksi WHERE tanggal_transaksi BETWEEN '$dari_tanggal_baru' AND '$sampai_tanggal_baru'"));
 
-//     $jumlah_transaksi = mysqli_num_rows(mysqli_query($koneksi, "SELECT * FROM transaksi WHERE tanggal_transaksi BETWEEN '$dari_tanggal_baru' AND '$sampai_tanggal_baru'"));
+    $jumlah_transaksi = mysqli_num_rows(mysqli_query($koneksi, "SELECT * FROM transaksi WHERE tanggal_transaksi BETWEEN '$dari_tanggal_baru' AND '$sampai_tanggal_baru'"));
 
-//     $transaksi = mysqli_query($koneksi, "SELECT * FROM transaksi INNER JOIN user ON transaksi.id_user = user.id_user WHERE tanggal_transaksi BETWEEN '$dari_tanggal_baru' AND '$sampai_tanggal_baru' ORDER BY tanggal_transaksi DESC");
+    $transaksi = mysqli_query($koneksi, "SELECT * FROM transaksi INNER JOIN user ON transaksi.id_user = user.id_user WHERE tanggal_transaksi BETWEEN '$dari_tanggal_baru' AND '$sampai_tanggal_baru' ORDER BY tanggal_transaksi DESC");
 
-//     $barang_paling_laku = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT barang.id_barang, barang.nama_barang, SUM(kuantitas) as laku FROM detail_transaksi dt INNER JOIN barang ON dt.id_barang = barang.id_barang INNER JOIN transaksi t ON dt.id_transaksi = t.id_transaksi WHERE tanggal_transaksi BETWEEN '$dari_tanggal_baru' AND '$sampai_tanggal_baru' GROUP BY dt.id_barang ORDER BY laku DESC LIMIT 1"));
+    $produk_paling_laku = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT produk.id_produk, produk.nama_produk, SUM(jumlah) as laku FROM detail_transaksi dt INNER JOIN produk ON dt.id_produk = produk.id_produk INNER JOIN transaksi t ON dt.id_transaksi = t.id_transaksi WHERE tanggal_transaksi BETWEEN '$dari_tanggal_baru' AND '$sampai_tanggal_baru' GROUP BY dt.id_produk ORDER BY laku DESC LIMIT 1"));
 
-//     // 0 = monday
-//     $monday = mysqli_num_rows(mysqli_query($koneksi, "SELECT * FROM transaksi WHERE WEEKDAY(tanggal_transaksi) = '0' AND tanggal_transaksi BETWEEN '$dari_tanggal_baru' AND '$sampai_tanggal_baru'"));
-//     // 1 = tuesday
-//     $tuesday = mysqli_num_rows(mysqli_query($koneksi, "SELECT * FROM transaksi WHERE WEEKDAY(tanggal_transaksi) = '1' AND tanggal_transaksi BETWEEN '$dari_tanggal_baru' AND '$sampai_tanggal_baru'"));
-//     // 2 = wednesday
-//     $wednesday = mysqli_num_rows(mysqli_query($koneksi, "SELECT * FROM transaksi WHERE WEEKDAY(tanggal_transaksi) = '2' AND tanggal_transaksi BETWEEN '$dari_tanggal_baru' AND '$sampai_tanggal_baru'"));
-//     // 3 = thursday
-//     $thursday = mysqli_num_rows(mysqli_query($koneksi, "SELECT * FROM transaksi WHERE WEEKDAY(tanggal_transaksi) = '3' AND tanggal_transaksi BETWEEN '$dari_tanggal_baru' AND '$sampai_tanggal_baru'"));
-//     // 4 = friday
-//     $friday = mysqli_num_rows(mysqli_query($koneksi, "SELECT * FROM transaksi WHERE WEEKDAY(tanggal_transaksi) = '4' AND tanggal_transaksi BETWEEN '$dari_tanggal_baru' AND '$sampai_tanggal_baru'"));
-//     // 5 = saturday
-//     $saturday = mysqli_num_rows(mysqli_query($koneksi, "SELECT * FROM transaksi WHERE WEEKDAY(tanggal_transaksi) = '5' AND tanggal_transaksi BETWEEN '$dari_tanggal_baru' AND '$sampai_tanggal_baru'"));
-//     // 6 = sunday
-//     $sunday = mysqli_num_rows(mysqli_query($koneksi, "SELECT * FROM transaksi WHERE WEEKDAY(tanggal_transaksi) = '6' AND tanggal_transaksi BETWEEN '$dari_tanggal_baru' AND '$sampai_tanggal_baru'"));
+    // 0 = monday
+    $monday = mysqli_num_rows(mysqli_query($koneksi, "SELECT * FROM transaksi WHERE WEEKDAY(tanggal_transaksi) = '0' AND tanggal_transaksi BETWEEN '$dari_tanggal_baru' AND '$sampai_tanggal_baru'"));
+    // 1 = tuesday
+    $tuesday = mysqli_num_rows(mysqli_query($koneksi, "SELECT * FROM transaksi WHERE WEEKDAY(tanggal_transaksi) = '1' AND tanggal_transaksi BETWEEN '$dari_tanggal_baru' AND '$sampai_tanggal_baru'"));
+    // 2 = wednesday
+    $wednesday = mysqli_num_rows(mysqli_query($koneksi, "SELECT * FROM transaksi WHERE WEEKDAY(tanggal_transaksi) = '2' AND tanggal_transaksi BETWEEN '$dari_tanggal_baru' AND '$sampai_tanggal_baru'"));
+    // 3 = thursday
+    $thursday = mysqli_num_rows(mysqli_query($koneksi, "SELECT * FROM transaksi WHERE WEEKDAY(tanggal_transaksi) = '3' AND tanggal_transaksi BETWEEN '$dari_tanggal_baru' AND '$sampai_tanggal_baru'"));
+    // 4 = friday
+    $friday = mysqli_num_rows(mysqli_query($koneksi, "SELECT * FROM transaksi WHERE WEEKDAY(tanggal_transaksi) = '4' AND tanggal_transaksi BETWEEN '$dari_tanggal_baru' AND '$sampai_tanggal_baru'"));
+    // 5 = saturday
+    $saturday = mysqli_num_rows(mysqli_query($koneksi, "SELECT * FROM transaksi WHERE WEEKDAY(tanggal_transaksi) = '5' AND tanggal_transaksi BETWEEN '$dari_tanggal_baru' AND '$sampai_tanggal_baru'"));
+    // 6 = sunday
+    $sunday = mysqli_num_rows(mysqli_query($koneksi, "SELECT * FROM transaksi WHERE WEEKDAY(tanggal_transaksi) = '6' AND tanggal_transaksi BETWEEN '$dari_tanggal_baru' AND '$sampai_tanggal_baru'"));
 
-//     $jenis_barang = mysqli_query($koneksi, "SELECT *, SUM(kuantitas) as total_kuantitas FROM detail_transaksi INNER JOIN barang ON detail_transaksi.id_barang = barang.id_barang INNER JOIN jenis_barang ON barang.id_jenis_barang = jenis_barang.id_jenis_barang INNER JOIN transaksi ON transaksi.id_transaksi = detail_transaksi.id_transaksi WHERE transaksi.tanggal_transaksi BETWEEN '$dari_tanggal_baru' AND '$sampai_tanggal_baru' GROUP BY detail_transaksi.id_barang");
+    $produk = mysqli_query($koneksi, "SELECT *, SUM(jumlah) as total FROM detail_transaksi INNER JOIN produk ON detail_transaksi.id_produk = produk.id_produk LEFT OUTER JOIN jenis_saldo ON produk.id_jenis_saldo = jenis_saldo.id_jenis_saldo INNER JOIN transaksi ON transaksi.id_transaksi = detail_transaksi.id_transaksi WHERE transaksi.tanggal_transaksi BETWEEN '$dari_tanggal_baru' AND '$sampai_tanggal_baru' GROUP BY detail_transaksi.id_produk");
 
-// }
+}
 
 
 
@@ -189,7 +189,7 @@ $data_profile = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM user WH
                                                 Barang Paling Laku <?= isset($_GET['btnFilter']) ? "(Filter)" : "(Semua)"; ?></div>
                                             <div class="h6 mb-0 font-weight-bold text-gray-800">
                                                 <?php if ($barang_paling_laku): ?>
-                                                    <?= $barang_paling_laku['nama_barang']; ?> (<?= $barang_paling_laku['laku']; ?>)
+                                                    <?= $barang_paling_laku['nama_produk']; ?> (<?= $barang_paling_laku['laku']; ?>)
                                                 <?php else: ?>
                                                     Tidak Ada
                                                 <?php endif ?>
@@ -449,19 +449,19 @@ $data_profile = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM user WH
           type: 'doughnut',
           data: {
             labels: [
-                <?php foreach ($jenis_barang as $djb): ?>
-                    '<?= $djb['jenis_barang']; ?>',
+                <?php foreach ($produk as $dp): ?>
+                    '<?= $dp['nama_produk']; ?>',
                 <?php endforeach ?>
             ],
             datasets: [{
               data: [
-                <?php foreach ($jenis_barang as $djb): ?>
-                    '<?= $djb['total_kuantitas'] ?>',
+                <?php foreach ($produk as $dp): ?>
+                    '<?= $dp['total'] ?>',
                 <?php endforeach ?>
               ],
               backgroundColor: [
                 // Generate a random color for each segment
-                <?php foreach ($jenis_barang as $djb): ?>
+                <?php foreach ($produk as $dp): ?>
                     getRandomColor(),
                 <?php endforeach ?>
               ],
