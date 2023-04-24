@@ -55,18 +55,34 @@ if (isset($_POST['btnUbahDetailTransaksi'])) {
 
 	$jumlah_old = $data_detail_transaksi['jumlah'];
 	$id_produk_old = $data_detail_transaksi['id_produk'];
+	$id_jenis_saldo_old = $data_detail_transaksi['id_jenis_saldo'];
+	$harga_jual_old = $data_detail_transaksi['harga_jual'];
 	
-	// if ($id_produk_old == $id_produk) {
-	// 	mysqli_query($koneksi, "UPDATE produk SET stok = (stok + '$jumlah_old') - '$jumlah' WHERE id_produk = '$id_produk'");
-	// }
-
-	// if ($id_produk_old != $id_produk) {
-	// 	mysqli_query($koneksi, "UPDATE produk SET stok = (stok + '$jumlah_old') WHERE id_produk = '$id_produk_old'");
-	// 	mysqli_query($koneksi, "UPDATE produk SET stok = stok - '$jumlah' WHERE id_produk = '$id_produk'");
-	// }
-
-
 	if ($ubah_detail_transaksi) {
+		if ($id_produk_old == $id_produk) {
+			// update stok
+			$update_stok = mysqli_query($koneksi, "UPDATE produk SET stok = (stok + '$jumlah_old') - '$jumlah' WHERE id_produk = '$id_produk'");
+			// update jenis saldo
+			$update_jenis_saldo = mysqli_query($koneksi, "UPDATE jenis_saldo SET jumlah_saldo = (jumlah_saldo + '$jumlah_old') - '$jumlah' WHERE id_jenis_saldo = '$id_jenis_saldo_old'");
+		}
+
+		if ($id_produk_old != $id_produk) {
+			// cek old id produk is stok or jenis saldo
+			// update stok old
+			$update_stok_old = mysqli_query($koneksi, "UPDATE produk SET stok = stok + '$jumlah_old' WHERE id_produk = '$id_produk_old'");
+			// update jenis saldo old
+			$update_jenis_saldo_old = mysqli_query($koneksi, "UPDATE jenis_saldo SET jumlah_saldo = jumlah_saldo + '$harga_jual_old' WHERE id_jenis_saldo = '$id_jenis_saldo_old'");
+
+			// new produk
+			$data_produk = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM produk WHERE produk.id_produk = '$id_produk'"));
+
+			$update_stok = mysqli_query($koneksi, "UPDATE produk SET stok = stok - '$jumlah' WHERE id_produk = '$id_produk'");
+			$data_produk = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM produk LEFT OUTER JOIN jenis_saldo ON produk.id_jenis_saldo = jenis_saldo.id_jenis_saldo WHERE produk.id_produk = '$id_produk'"));
+			$id_jenis_saldo = $data_produk['id_jenis_saldo'];
+			$harga_jual = $data_produk['harga_jual'];
+			$update_jenis_saldo = mysqli_query($koneksi, "UPDATE jenis_saldo SET jumlah_saldo = jumlah_saldo - '$harga_jual' WHERE id_jenis_saldo = '$id_jenis_saldo'");
+		}
+
 		setAlert("Berhasil!", "Transaksi Produk berhasil diubah!", "success");
 		header("Location:" . BASE_URL . "transaksi/detail_transaksi.php?id_transaksi=$id_transaksi");
 		exit;

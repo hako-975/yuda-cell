@@ -40,10 +40,14 @@ if (isset($_POST['btnTambahDetailTransaksi'])) {
 	$total_harga = $get_total_harga['total_harga'];
 	$update_total_harga = mysqli_query($koneksi, "UPDATE transaksi SET total_harga = '$total_harga' WHERE id_transaksi = '$id_transaksi'");
 
-	// $update_stok = mysqli_query($koneksi, "UPDATE produk SET stok = stok - '$jumlah' WHERE id_produk = '$id_produk'");
 
 
 	if ($tambah_detail_transaksi) {
+		$update_stok = mysqli_query($koneksi, "UPDATE produk SET stok = stok - '$jumlah' WHERE id_produk = '$id_produk'");
+		$data_produk = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM produk LEFT OUTER JOIN jenis_saldo ON produk.id_jenis_saldo = jenis_saldo.id_jenis_saldo WHERE produk.id_produk = '$id_produk'"));
+		$id_jenis_saldo = $data_produk['id_jenis_saldo'];
+		$harga_jual = $data_produk['harga_jual'];
+		$update_jenis_saldo = mysqli_query($koneksi, "UPDATE jenis_saldo SET jumlah_saldo = jumlah_saldo - '$harga_jual' WHERE id_jenis_saldo = '$id_jenis_saldo'");
 		setAlert("Berhasil!", "Transaksi Produk berhasil ditambahkan!", "success");
 		header("Location:" . BASE_URL . "transaksi/detail_transaksi.php?id_transaksi=$id_transaksi");
 		exit;
@@ -54,6 +58,7 @@ if (isset($_POST['btnTambahDetailTransaksi'])) {
 				window.history.back();
 			</script>
 		";
+		exit;
 	}
 }
 
@@ -118,7 +123,7 @@ $data_profile = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM user WH
 								</div>
 								<div class="form-group">
 									<label for="jumlah">Jumlah</label>
-									<input type="number" name="jumlah" id="jumlah" class="form-control" required>
+									<input type="number" name="jumlah" id="jumlah" class="form-control" required value="1">
 								</div>
 								<div class="form-group">
 									<label for="subtotal">Subtotal</label>
