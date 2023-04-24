@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 14 Apr 2023 pada 21.00
+-- Waktu pembuatan: 24 Apr 2023 pada 16.10
 -- Versi server: 10.4.27-MariaDB
 -- Versi PHP: 8.2.0
 
@@ -35,6 +35,34 @@ CREATE TABLE `detail_transaksi` (
   `subtotal` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data untuk tabel `detail_transaksi`
+--
+
+INSERT INTO `detail_transaksi` (`id_detail_transaksi`, `id_transaksi`, `id_produk`, `jumlah`, `subtotal`) VALUES
+(4, 1, 2, 1, 53000),
+(5, 1, 1, 1, 12000);
+
+-- --------------------------------------------------------
+
+--
+-- Struktur dari tabel `jenis_saldo`
+--
+
+CREATE TABLE `jenis_saldo` (
+  `id_jenis_saldo` int(11) NOT NULL,
+  `jenis_saldo` varchar(50) NOT NULL,
+  `jumlah_saldo` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data untuk tabel `jenis_saldo`
+--
+
+INSERT INTO `jenis_saldo` (`id_jenis_saldo`, `jenis_saldo`, `jumlah_saldo`) VALUES
+(1, 'Sun Reload Max', 947000),
+(2, 'Elroad', 0);
+
 -- --------------------------------------------------------
 
 --
@@ -44,11 +72,19 @@ CREATE TABLE `detail_transaksi` (
 CREATE TABLE `pemasukan` (
   `id_pemasukan` int(11) NOT NULL,
   `id_produk` int(11) DEFAULT NULL,
-  `id_saldo` int(11) DEFAULT NULL,
+  `id_jenis_saldo` int(11) DEFAULT NULL,
   `id_supplier` int(11) NOT NULL,
   `tanggal_pemasukan` datetime NOT NULL,
   `jumlah` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data untuk tabel `pemasukan`
+--
+
+INSERT INTO `pemasukan` (`id_pemasukan`, `id_produk`, `id_jenis_saldo`, `id_supplier`, `tanggal_pemasukan`, `jumlah`) VALUES
+(1, 1, NULL, 1, '2023-04-24 21:03:00', 10),
+(2, NULL, 1, 1, '2023-04-24 21:03:00', 1000000);
 
 -- --------------------------------------------------------
 
@@ -62,20 +98,16 @@ CREATE TABLE `produk` (
   `harga_beli` int(11) NOT NULL,
   `harga_jual` int(11) NOT NULL,
   `stok` int(11) DEFAULT NULL,
-  `id_saldo` int(11) DEFAULT NULL
+  `id_jenis_saldo` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- --------------------------------------------------------
-
 --
--- Struktur dari tabel `saldo`
+-- Dumping data untuk tabel `produk`
 --
 
-CREATE TABLE `saldo` (
-  `id_saldo` int(11) NOT NULL,
-  `nama_saldo` varchar(50) NOT NULL,
-  `saldo` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+INSERT INTO `produk` (`id_produk`, `nama_produk`, `harga_beli`, `harga_jual`, `stok`, `id_jenis_saldo`) VALUES
+(1, 'Voucher Indosat 2,5 Gb 5 Hari', 10000, 12000, 9, NULL),
+(2, 'Dana 50k', 51000, 53000, NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -89,6 +121,14 @@ CREATE TABLE `supplier` (
   `alamat_supplier` text NOT NULL,
   `no_telp_supplier` varchar(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data untuk tabel `supplier`
+--
+
+INSERT INTO `supplier` (`id_supplier`, `nama_supplier`, `alamat_supplier`, `no_telp_supplier`) VALUES
+(1, 'Sinar Mentari', 'Ciputat', '0'),
+(2, 'Elroad', '-', '0');
 
 -- --------------------------------------------------------
 
@@ -104,6 +144,13 @@ CREATE TABLE `transaksi` (
   `kembalian` int(11) DEFAULT NULL,
   `id_user` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data untuk tabel `transaksi`
+--
+
+INSERT INTO `transaksi` (`id_transaksi`, `tanggal_transaksi`, `total_harga`, `bayar`, `kembalian`, `id_user`) VALUES
+(1, '2023-04-24 21:03:21', 65000, 100000, 35000, 1);
 
 -- --------------------------------------------------------
 
@@ -141,26 +188,26 @@ ALTER TABLE `detail_transaksi`
   ADD KEY `id_produk` (`id_produk`);
 
 --
+-- Indeks untuk tabel `jenis_saldo`
+--
+ALTER TABLE `jenis_saldo`
+  ADD PRIMARY KEY (`id_jenis_saldo`);
+
+--
 -- Indeks untuk tabel `pemasukan`
 --
 ALTER TABLE `pemasukan`
   ADD PRIMARY KEY (`id_pemasukan`),
   ADD KEY `id_supplier` (`id_supplier`),
   ADD KEY `id_produk` (`id_produk`),
-  ADD KEY `id_saldo` (`id_saldo`);
+  ADD KEY `id_saldo` (`id_jenis_saldo`);
 
 --
 -- Indeks untuk tabel `produk`
 --
 ALTER TABLE `produk`
   ADD PRIMARY KEY (`id_produk`),
-  ADD KEY `id_saldo` (`id_saldo`);
-
---
--- Indeks untuk tabel `saldo`
---
-ALTER TABLE `saldo`
-  ADD PRIMARY KEY (`id_saldo`);
+  ADD KEY `id_saldo` (`id_jenis_saldo`);
 
 --
 -- Indeks untuk tabel `supplier`
@@ -189,37 +236,37 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT untuk tabel `detail_transaksi`
 --
 ALTER TABLE `detail_transaksi`
-  MODIFY `id_detail_transaksi` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_detail_transaksi` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT untuk tabel `jenis_saldo`
+--
+ALTER TABLE `jenis_saldo`
+  MODIFY `id_jenis_saldo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT untuk tabel `pemasukan`
 --
 ALTER TABLE `pemasukan`
-  MODIFY `id_pemasukan` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_pemasukan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT untuk tabel `produk`
 --
 ALTER TABLE `produk`
-  MODIFY `id_produk` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT untuk tabel `saldo`
---
-ALTER TABLE `saldo`
-  MODIFY `id_saldo` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_produk` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT untuk tabel `supplier`
 --
 ALTER TABLE `supplier`
-  MODIFY `id_supplier` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_supplier` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT untuk tabel `transaksi`
 --
 ALTER TABLE `transaksi`
-  MODIFY `id_transaksi` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_transaksi` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT untuk tabel `user`
@@ -243,14 +290,14 @@ ALTER TABLE `detail_transaksi`
 --
 ALTER TABLE `pemasukan`
   ADD CONSTRAINT `pemasukan_ibfk_1` FOREIGN KEY (`id_produk`) REFERENCES `produk` (`id_produk`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `pemasukan_ibfk_2` FOREIGN KEY (`id_saldo`) REFERENCES `saldo` (`id_saldo`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `pemasukan_ibfk_2` FOREIGN KEY (`id_jenis_saldo`) REFERENCES `jenis_saldo` (`id_jenis_saldo`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `pemasukan_ibfk_3` FOREIGN KEY (`id_supplier`) REFERENCES `supplier` (`id_supplier`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Ketidakleluasaan untuk tabel `produk`
 --
 ALTER TABLE `produk`
-  ADD CONSTRAINT `produk_ibfk_1` FOREIGN KEY (`id_saldo`) REFERENCES `saldo` (`id_saldo`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `produk_ibfk_1` FOREIGN KEY (`id_jenis_saldo`) REFERENCES `jenis_saldo` (`id_jenis_saldo`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Ketidakleluasaan untuk tabel `transaksi`
