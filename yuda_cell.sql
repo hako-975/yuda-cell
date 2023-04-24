@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 24 Apr 2023 pada 16.10
+-- Waktu pembuatan: 24 Apr 2023 pada 16.29
 -- Versi server: 10.4.27-MariaDB
 -- Versi PHP: 8.2.0
 
@@ -35,14 +35,6 @@ CREATE TABLE `detail_transaksi` (
   `subtotal` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data untuk tabel `detail_transaksi`
---
-
-INSERT INTO `detail_transaksi` (`id_detail_transaksi`, `id_transaksi`, `id_produk`, `jumlah`, `subtotal`) VALUES
-(4, 1, 2, 1, 53000),
-(5, 1, 1, 1, 12000);
-
 -- --------------------------------------------------------
 
 --
@@ -54,14 +46,6 @@ CREATE TABLE `jenis_saldo` (
   `jenis_saldo` varchar(50) NOT NULL,
   `jumlah_saldo` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data untuk tabel `jenis_saldo`
---
-
-INSERT INTO `jenis_saldo` (`id_jenis_saldo`, `jenis_saldo`, `jumlah_saldo`) VALUES
-(1, 'Sun Reload Max', 947000),
-(2, 'Elroad', 0);
 
 -- --------------------------------------------------------
 
@@ -78,14 +62,6 @@ CREATE TABLE `pemasukan` (
   `jumlah` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data untuk tabel `pemasukan`
---
-
-INSERT INTO `pemasukan` (`id_pemasukan`, `id_produk`, `id_jenis_saldo`, `id_supplier`, `tanggal_pemasukan`, `jumlah`) VALUES
-(1, 1, NULL, 1, '2023-04-24 21:03:00', 10),
-(2, NULL, 1, 1, '2023-04-24 21:03:00', 1000000);
-
 -- --------------------------------------------------------
 
 --
@@ -101,14 +77,6 @@ CREATE TABLE `produk` (
   `id_jenis_saldo` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data untuk tabel `produk`
---
-
-INSERT INTO `produk` (`id_produk`, `nama_produk`, `harga_beli`, `harga_jual`, `stok`, `id_jenis_saldo`) VALUES
-(1, 'Voucher Indosat 2,5 Gb 5 Hari', 10000, 12000, 9, NULL),
-(2, 'Dana 50k', 51000, 53000, NULL, 1);
-
 -- --------------------------------------------------------
 
 --
@@ -121,14 +89,6 @@ CREATE TABLE `supplier` (
   `alamat_supplier` text NOT NULL,
   `no_telp_supplier` varchar(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data untuk tabel `supplier`
---
-
-INSERT INTO `supplier` (`id_supplier`, `nama_supplier`, `alamat_supplier`, `no_telp_supplier`) VALUES
-(1, 'Sinar Mentari', 'Ciputat', '0'),
-(2, 'Elroad', '-', '0');
 
 -- --------------------------------------------------------
 
@@ -144,13 +104,6 @@ CREATE TABLE `transaksi` (
   `kembalian` int(11) DEFAULT NULL,
   `id_user` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data untuk tabel `transaksi`
---
-
-INSERT INTO `transaksi` (`id_transaksi`, `tanggal_transaksi`, `total_harga`, `bayar`, `kembalian`, `id_user`) VALUES
-(1, '2023-04-24 21:03:21', 65000, 100000, 35000, 1);
 
 -- --------------------------------------------------------
 
@@ -236,37 +189,37 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT untuk tabel `detail_transaksi`
 --
 ALTER TABLE `detail_transaksi`
-  MODIFY `id_detail_transaksi` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id_detail_transaksi` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT untuk tabel `jenis_saldo`
 --
 ALTER TABLE `jenis_saldo`
-  MODIFY `id_jenis_saldo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_jenis_saldo` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT untuk tabel `pemasukan`
 --
 ALTER TABLE `pemasukan`
-  MODIFY `id_pemasukan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_pemasukan` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT untuk tabel `produk`
 --
 ALTER TABLE `produk`
-  MODIFY `id_produk` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_produk` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT untuk tabel `supplier`
 --
 ALTER TABLE `supplier`
-  MODIFY `id_supplier` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_supplier` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT untuk tabel `transaksi`
 --
 ALTER TABLE `transaksi`
-  MODIFY `id_transaksi` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_transaksi` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT untuk tabel `user`
