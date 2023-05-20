@@ -51,7 +51,7 @@ if (isset($_GET['btnFilter'])) {
 
     $transaksi = mysqli_query($koneksi, "SELECT * FROM transaksi INNER JOIN user ON transaksi.id_user = user.id_user WHERE tanggal_transaksi BETWEEN '$dari_tanggal_baru' AND '$sampai_tanggal_baru' ORDER BY tanggal_transaksi DESC");
 
-    $produk_paling_laku = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT produk.id_produk, produk.nama_produk, SUM(jumlah) as laku FROM detail_transaksi dt INNER JOIN produk ON dt.id_produk = produk.id_produk INNER JOIN transaksi t ON dt.id_transaksi = t.id_transaksi WHERE tanggal_transaksi BETWEEN '$dari_tanggal_baru' AND '$sampai_tanggal_baru' GROUP BY dt.id_produk ORDER BY laku DESC LIMIT 1"));
+    $barang_paling_laku = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT produk.id_produk, produk.nama_produk, SUM(jumlah) as laku FROM detail_transaksi dt INNER JOIN produk ON dt.id_produk = produk.id_produk INNER JOIN transaksi t ON dt.id_transaksi = t.id_transaksi WHERE tanggal_transaksi BETWEEN '$dari_tanggal_baru' AND '$sampai_tanggal_baru' GROUP BY dt.id_produk ORDER BY laku DESC LIMIT 1"));
 
     // 0 = monday
     $monday = mysqli_num_rows(mysqli_query($koneksi, "SELECT * FROM transaksi WHERE WEEKDAY(tanggal_transaksi) = '0' AND tanggal_transaksi BETWEEN '$dari_tanggal_baru' AND '$sampai_tanggal_baru'"));

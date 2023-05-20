@@ -13,8 +13,6 @@ $pass = '';
 $db = 'yuda_cell';
 $koneksi = mysqli_connect($host, $user, $pass, $db);
 
-
-
 function setAlert($title='', $text='', $type='', $buttons='') 
 {
 	$_SESSION["alert"]["title"]		= $title;
